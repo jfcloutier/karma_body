@@ -7,5 +7,9 @@ defmodule KarmaBodyWeb.Router do
 
   scope "/api", KarmaBodyWeb do
     pipe_through :api
+
+    get "/sensors", BodyController, :sensors
+    get "/actuators", BodyController, :actuators
+
   end
 end
