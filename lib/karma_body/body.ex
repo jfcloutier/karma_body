@@ -6,11 +6,11 @@ defmodule KarmaBody.Body do
   alias KarmaBody.{Sensor, Actuator}
 
   @doc """
-  Get the body's sensors
+  Get the body's logical sensors
   """
   @callback sensors() :: [Sensor.t()]
   @doc """
-  Get the body's actuators
+  Get the body's logical actuators
   """
   @callback actuators() :: [Actuator.t()]
 end

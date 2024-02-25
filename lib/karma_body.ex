@@ -3,25 +3,27 @@ defmodule KarmaBody do
   KarmaBody keeps the context, which is either a simlation or a Lego robot.
   """
 
-  alias KarmaBody.{Simulation, Lego}
+  alias KarmaBody.Platform.Brickpi3
 
   def actuators() do
-    if simulated?() do
-      Simulation.Body.actuators()
-    else
-      Lego.Body.actuators()
+    case platform() do
+      :brickpi3 ->
+        Brickpi3.actuators()
+
+      other ->
+        raise "Platform #{inspect(other)} is not supported"
     end
   end
 
   def sensors() do
-    if simulated?() do
-      Simulation.Body.sensors()
-    else
-      Lego.Body.sensors()
+    case platform() do
+      :brickpi3 ->
+        Brickpi3.sensors()
+
+      other ->
+        raise "Platform #{inspect(other)} is not supported"
     end
   end
 
-  defp simulated?() do
-    Application.get_env(:karma_body, :simulated?, true)
-  end
+  def platform(), do: Application.get_env(:karma_body, :platform)
 end

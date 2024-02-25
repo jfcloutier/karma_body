@@ -29,6 +29,23 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Rover configuration
+
+config :karma_body,
+  platform: :brickpi3
+
+config :karma_body,
+  brickpi3: [
+    [port: :in1, sensor: :touch],
+    [port: :in2, sensor: :color],
+    [port: :in3, sensor: :infrared],
+    [port: :in4, sensor: :ultrasonic],
+    # left
+    [port: :outA, motor: :large_tacho],
+    # right
+    [port: :outB, motor: :large_tacho]
+  ]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

@@ -14,7 +14,8 @@ defmodule KarmaBody.Application do
       # Start a worker by calling: KarmaBody.Worker.start_link(arg)
       # {KarmaBody.Worker, arg},
       # Start to serve requests, typically the last entry
-      KarmaBodyWeb.Endpoint
+      KarmaBodyWeb.Endpoint,
+      KarmaBody.BodySupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
