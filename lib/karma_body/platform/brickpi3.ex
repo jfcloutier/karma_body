@@ -3,14 +3,14 @@ defmodule KarmaBody.Platform.Brickpi3 do
   The Brickpi3 as body.
   """
 
-  alias Brickpi3.LegoDevice
+  alias KarmaBody.Platform.Brickpi3.{LegoDevice, Sysfs}
   alias KarmaBody.Body
 
   use GenServer
 
-  @behaviour Body
+  require Logger
 
-  @ports_path "/sys/class/lego-port"
+  @behaviour Body
 
   @type t :: %__MODULE__{lego_sensors: [LegoDevice.t()], lego_motors: [LegoDevice.t()]}
 
@@ -38,27 +38,33 @@ defmodule KarmaBody.Platform.Brickpi3 do
   @impl GenServer
   @spec init(any()) :: {:ok, KarmaBody.Platform.Brickpi3.t()}
   def init(_opts) do
-    {lego_sensors, lego_motors} = initialize_ports()
+    {lego_sensors, lego_motors} = initialize_devices()
 
     {:ok, %__MODULE__{lego_motors: lego_motors, lego_sensors: lego_sensors}}
   end
 
+  @impl Body
   def sensors() do
-    GenServer.call(__MODULE__, :lego_sensors)
-    |> Enum.map(&to_logical_sensor/1)
+    GenServer.call(__MODULE__, :sensors)
   end
 
-  def actuator() do
-    GenServer.call(__MODULE__, :lego_motors)
-    |> Enum.map(&to_logical_actuator/1)
+  @impl Body
+  def actuators() do
+    GenServer.call(__MODULE__, :actuators)
   end
 
   @impl GenServer
-  def handle_call(:lego_sensors, _from, state), do: {:reply, state.lego_sensors, state}
+  def handle_call(:sensors, _from, state),
+    do: {:reply, state.lego_sensors |> Enum.map(&to_logical_device/1), state}
 
-  def handle_call(:lego_motors, _from, state), do: {:reply, state.lego_motors, state}
+  def handle_call(:actuators, _from, state),
+    do: {:reply, state.lego_motors |> Enum.map(&to_logical_device/1), state}
 
-  defp initialize_ports() do
+  ###
+
+  defp initialize_devices() do
+    Logger.debug("[Body] Initialing devices on the BrickPi3...")
+
     Application.get_env(:karma_body, :brickpi3)
     |> Enum.reduce({[], []}, fn port_config, {sensors_acc, motors_acc} ->
       cond do
@@ -84,16 +90,11 @@ defmodule KarmaBody.Platform.Brickpi3 do
   end
 
   defp initialize_device(device_class, port, device_type) do
-    port_path = "#{@ports_path}/port#{port_number(port)}"
-    device_mode = device_mode(device_type)
-    File.write!("#{port_path}/mode", device_mode)
-    :timer.sleep(500)
+    Logger.debug(
+      "[Body] Initializing #{inspect(device_type)} #{device_class} on port #{inspect(port)}"
+    )
 
-    if not self_loading_on_brickpi?(device_type) do
-      device_code = device_code(device_type)
-      :timer.sleep(500)
-      File.write!("#{port_path}/set_device", device_code)
-    end
+    port_path = Sysfs.register_device(port, device_type)
 
     LegoDevice.make(
       class: device_class,
@@ -103,56 +104,5 @@ defmodule KarmaBody.Platform.Brickpi3 do
     )
   end
 
-  defp port_number(port) do
-    case port do
-      :in1 -> 0
-      :in2 -> 1
-      :in3 -> 2
-      :in4 -> 3
-      :outA -> 4
-      :outB -> 5
-      :outC -> 6
-      :outD -> 7
-    end
-  end
-
-  defp device_mode(device_type) do
-    case device_type do
-      :infrared -> "ev3-uart"
-      :touch -> "ev3-analog"
-      :gyro -> "ev3-uart"
-      :color -> "ev3-uart"
-      :ultrasonic -> "ev3-uart"
-      :ir_seeker -> "nxt-i2c"
-      :large_tacho -> "tacho-motor"
-      :medium_tacho -> "tacho-motor"
-    end
-  end
-
-  defp device_code(device_type) do
-    case device_type do
-      :infrared -> "lego-ev3-ir"
-      :touch -> "lego-ev3-touch"
-      :gyro -> "lego-ev3-gyro"
-      :color -> "lego-ev3-color"
-      :ultrasonic -> "lego-ev3-us"
-      :ir_seeker -> "ht-nxt-ir-seek-v2 0x08"
-      :large_tacho -> "lego-ev3-l-motor"
-      :medium_tacho -> "lego-ev3-m-motor"
-    end
-  end
-
-  defp self_loading_on_brickpi?(device_type) do
-    device_type in [:touch, :large, :medium]
-  end
-
-  defp to_logical_sensor(_lego_sensor) do
-    # TODO
-    nil
-  end
-
-  defp to_logical_actuator(_lego_motor) do
-    # TODO
-    nil
-  end
+  defp to_logical_device(lego_device), do: lego_device.module.to_logical()
 end
