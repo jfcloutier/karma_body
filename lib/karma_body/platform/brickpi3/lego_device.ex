@@ -10,13 +10,17 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   @type t :: %__MODULE__{
           module: module(),
           class: Brickpi3.device_class(),
-          path: File.t(),
+          path: String.t(),
           port: Brickpi3.device_port(),
           type: Brickpi3.device_type()
         }
 
   defstruct module: nil, class: nil, path: nil, port: nil, type: nil
 
+  @doc """
+  Make a lego device.
+  """
+  @spec make(keyword()) :: t()
   def make(
         class: device_class,
         path: port_path,
@@ -35,13 +39,14 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
     lego_device
   end
 
+  @doc """
+  Make a name for the lego device.
+  """
+  @spec name(t()) :: String.t()
+  def name(%{type: type, port: port}), do: "#{type} on #{port}"
+
   defp module(device_type) do
     name = device_type |> Atom.to_string() |> Macro.camelize()
     "#{__MODULE__}.#{name}" |> String.to_atom()
   end
-
-  @doc """
-  Convert a Lego device to the logical device Karma.Agency expects
-  """
-  @callback to_logical_device(t()) :: KarmaBody.Actuator.t() | KarmaBody.Sensor.t()
 end
