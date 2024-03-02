@@ -20,13 +20,13 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   @doc """
   Associate the port with a device mode
   """
-  @spec register_device(port_name(), KarmaBody.device_type()) ::
-          String.t()
-  def register_device(port, device_type) do
-    device_mode = device_mode(device_type)
+  @spec register_device(KarmaBody.device_class(), port_name(), KarmaBody.device_type()) ::
+          {String.t(), String.t()}
+  def register_device(device_class, port, device_type) do
     port_path = "#{@ports_path}/port#{port_number(port)}"
+    device_mode = device_mode(device_type)
     File.write!("#{port_path}/mode", device_mode)
-    # :timer.sleep(500)
+    :timer.sleep(500)
     # If the device is not self-loading
     if device_type not in [:touch, :large_tacho, :medium_tacho] do
       device_code = device_code(device_type)
@@ -34,7 +34,15 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
       File.write!("#{port_path}/set_device", device_code)
     end
 
-    port_path
+    attribute_path = attribute_path(port_path, device_class, device_type)
+    {port_path, attribute_path}
+  end
+
+  # cat /sys/class/lego-port/port0/address => spi0.1:S1
+  # /sys/class/lego-port/port0/spi0.1:S1:lego-ev3-touch/lego-sensor/sensor1
+  defp attribute_path(port_path, device_class, device_type) do
+    address = File.read!(Path.join(port_path, "address")) |> String.trim()
+    Path.join(port_path, ["#{address}:#{device_type}", "lego-#{device_class}", "sensor1"])
   end
 
   @doc "Get the typed value of an attribute of the device"

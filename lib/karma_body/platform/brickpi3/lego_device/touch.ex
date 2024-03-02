@@ -22,7 +22,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Touch do
 
   @impl KarmaBody.Sensor
   def sense(touch_sensor, "contact") do
-    case LegoDevice.get_attribute(touch_sensor, "touch", :integer) do
+    case LegoDevice.get_attribute(touch_sensor, "value0", :integer) do
       0 -> "released"
       1 -> "pressed"
     end

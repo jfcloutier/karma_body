@@ -128,13 +128,14 @@ defmodule KarmaBody.Platform.Brickpi3 do
       "[KarmaBody] Brickpi3 - Initializing #{inspect(device_type)} #{device_class} on port #{inspect(port)}"
     )
 
-    port_path = Sysfs.register_device(port, device_type)
+    {port_path, attribute_path} = Sysfs.register_device(device_class, port, device_type)
 
     LegoDevice.make(
       class: device_class,
-      path: port_path,
+      type: device_type,
       port: port,
-      type: device_type
+      path_path: port_path,
+      attribute_path: attribute_path
     )
   end
 

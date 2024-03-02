@@ -10,14 +10,21 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   require Logger
 
   @type t :: %__MODULE__{
-          class: KarmaBody.device_class(),
-          type: KarmaBody.device_type(),
+          # The module implementing the device
           module: module(),
-          path: String.t(),
-          port: Brickpi3.device_port()
+          # Whether a sensor or motor device
+          class: KarmaBody.device_class(),
+          # The type of sensor or motor
+          type: KarmaBody.device_type(),
+          # The name of the port occupied by the device
+          port: Brickpi3.device_port(),
+          # Path to the lego port where mode and device can be set
+          port_path: String.t(),
+          # Path to where the device attribute values can be written and read
+          attribute_path: String.t()
         }
 
-  defstruct module: nil, class: nil, path: nil, port: nil, type: nil
+  defstruct module: nil, class: nil, type: nil, port: nil, port_path: nil, attribute_path: nil
 
   @doc """
   Convert a lego device into one or more exposed sensor devices.
@@ -35,16 +42,18 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   @spec make(keyword()) :: t()
   def make(
         class: device_class,
-        path: port_path,
+        type: device_type,
         port: port,
-        type: device_type
+        port_path: port_path,
+        attribute_path: attribute_path
       ) do
     lego_device = %__MODULE__{
       module: device_module_name(device_type),
       class: device_class,
-      path: port_path,
+      type: device_type,
       port: port,
-      type: device_type
+      port_path: port_path,
+      attribute_path: attribute_path
     }
 
     Logger.debug("[KarmaBody] LegoDevice - Made LegoDevice #{inspect(lego_device)}")
@@ -69,7 +78,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   """
   @spec get_attribute(t(), String.t(), Sysfs.attribute_type()) :: any()
   def get_attribute(lego_device, attribute, attribute_type),
-    do: Sysfs.get_attribute(lego_device.path, attribute, attribute_type)
+    do: Sysfs.get_attribute(lego_device.attribute_path, attribute, attribute_type)
 
   defp device_module_name(device_type) do
     name = device_type |> Atom.to_string() |> Macro.camelize()
