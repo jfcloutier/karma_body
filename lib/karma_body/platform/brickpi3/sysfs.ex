@@ -13,12 +13,14 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
           | :outC
           | :outD
 
+  @type attribute_type :: :string | :atom | :percent | :integer | :list
+
   @ports_path "/sys/class/lego-port"
 
   @doc """
   Associate the port with a device mode
   """
-  @spec register_device(port_name(), KarmaBody.Platform.Brickpi3.device_type()) ::
+  @spec register_device(port_name(), KarmaBody.device_type()) ::
           String.t()
   def register_device(port, device_type) do
     device_mode = device_mode(device_type)
@@ -36,8 +38,8 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   end
 
   @doc "Get the typed value of an attribute of the device"
-  def get_attribute(device, attribute, type) do
-    value = read_sys(device.path, attribute)
+  def get_attribute(path, attribute, type) do
+    value = read_sys(path, attribute)
 
     case type do
       :string ->
@@ -60,8 +62,8 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   end
 
   @doc "Set the value of an attribute of the device"
-  def set_attribute(device, attribute, value) do
-    write_sys(device.path, attribute, "#{value}")
+  def set_attribute(path, attribute, value) do
+    write_sys(path, attribute, "#{value}")
   end
 
   @doc "Reading a line from a file"

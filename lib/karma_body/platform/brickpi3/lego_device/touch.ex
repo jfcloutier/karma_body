@@ -4,20 +4,27 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Touch do
   """
 
   alias KarmaBody.Platform.Brickpi3.LegoDevice
-  alias KarmaBody.Sensor
 
+  @behaviour LegoDevice
   @behaviour KarmaBody.Sensor
 
-  @impl KarmaBody.Sensor
-  def to_logical_device(lego_touch_sensor),
-    do: %Sensor{
-      name: LegoDevice.name(lego_touch_sensor),
-      device: lego_touch_sensor,
-      domain: [:not_touching, :touching]
-    }
+  @impl LegoDevice
+  def to_exposed_sensors(touch_sensor),
+    do: [
+      LegoDevice.to_exposed_device(touch_sensor, %{
+        sense: "contact",
+        domain: ["pressed", "released"]
+      })
+    ]
+
+  @impl LegoDevice
+  def to_exposed_actuators(_), do: []
 
   @impl KarmaBody.Sensor
-  def sense(_sensor) do
-    nil
+  def sense(touch_sensor, "contact") do
+    case LegoDevice.get_attribute(touch_sensor, "touch", :integer) do
+      0 -> "released"
+      1 -> "pressed"
+    end
   end
 end

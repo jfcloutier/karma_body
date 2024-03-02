@@ -3,17 +3,15 @@ defmodule KarmaBodyWeb.BodyJSON do
   JSON view
   """
 
-  alias KarmaBody.{Sensor, Actuator}
-
   def index(%{sensors: sensors}) do
-    %{sensors: for(sensor <- sensors, do: data(sensor))}
+    %{sensors: for(sensor <- sensors, do: sensor_data(sensor))}
   end
 
   def index(%{actuators: actuators}) do
-    %{actuators: for(actuator <- actuators, do: data(actuator))}
+    %{actuators: for(actuator <- actuators, do: actuator_data(actuator))}
   end
 
-  defp data(%Sensor{} = sensor), do: %{name: sensor.name}
+  defp sensor_data(sensor), do: %{sensor | class: "sensor"}
 
-  defp data(%Actuator{} = actuator), do: %{name: actuator.name}
+  defp actuator_data(actuator), do: %{actuator | class: "actuator"}
 end

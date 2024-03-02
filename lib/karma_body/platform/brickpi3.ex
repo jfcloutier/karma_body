@@ -1,32 +1,22 @@
 defmodule KarmaBody.Platform.Brickpi3 do
   @moduledoc """
   The Brickpi3 as body.
+
+  It registers devices, identifies them from dispatched calls by their ids and disaptches to them.
   """
 
   alias KarmaBody.Platform.Brickpi3.{LegoDevice, Sysfs}
-  alias KarmaBody.Body
+  alias KarmaBody.Platform
 
   use GenServer
 
   require Logger
 
-  @behaviour Body
+  @behaviour Platform
 
   @type t :: %__MODULE__{lego_sensors: [LegoDevice.t()], lego_motors: [LegoDevice.t()]}
 
   @type device_port :: :outA | :outB | :outC | :outD | :in1 | :in2 | :in3 | :in4
-
-  @type device_type ::
-          :infrared
-          | :touch
-          | :gyro
-          | :color
-          | :ultrasonic
-          | :ir_seeker
-          | :large_tacho
-          | :medium_tacho
-
-  @type device_class :: :sensor | :motor
 
   defstruct lego_sensors: [], lego_motors: []
 
@@ -43,27 +33,71 @@ defmodule KarmaBody.Platform.Brickpi3 do
     {:ok, %__MODULE__{lego_motors: lego_motors, lego_sensors: lego_sensors}}
   end
 
-  @impl Body
-  def sensors() do
-    GenServer.call(__MODULE__, :sensors)
+  @impl Platform
+  def device_id(%{type: device_type, port: port}), do:
+    "#{device_type}_#{port}"
+
+  @impl Platform
+  def device_type_from_id(device_id) do
+    [type_s, _] = String.split(device_id, "_")
+    String.to_existing_atom(type_s)
   end
 
-  @impl Body
-  def actuators() do
-    GenServer.call(__MODULE__, :actuators)
+  @impl Platform
+  def exposed_sensors() do
+    GenServer.call(__MODULE__, :exposed_sensors)
+  end
+
+  @impl Platform
+  def exposed_actuators() do
+    GenServer.call(__MODULE__, :exposed_actuators)
+  end
+
+  @impl Platform
+  def sense(device_id, sense) do
+    GenServer.call(__MODULE__, {:sense, device_id, sense})
+  end
+
+  @impl Platform
+  def actuate(device_id, action) do
+    GenServer.cast(__MODULE__, {:actuate, device_id, action})
   end
 
   @impl GenServer
-  def handle_call(:sensors, _from, state),
-    do: {:reply, state.lego_sensors |> Enum.map(&to_logical_device/1), state}
+  def handle_call(:exposed_sensors, _from, state) do
+    sensors = (state.lego_sensors |> Enum.map(&to_exposed_sensors/1))
+    motor_sensors = (state.lego_motors |> Enum.map(&to_exposed_sensors/1))
+    all_exposed_sensors = List.flatten(sensors ++ motor_sensors)
+    {:reply, all_exposed_sensors, state}
+  end
 
-  def handle_call(:actuators, _from, state),
-    do: {:reply, state.lego_motors |> Enum.map(&to_logical_device/1), state}
+  def handle_call(:exposed_actuators, _from, state),
+    do: {:reply, state.lego_motors |> Enum.map(&to_exposed_actuators/1) |> List.flatten(), state}
+
+  def handle_call({:sense, device_id, sense}, _from, state) do
+    lego_device = find_device(device_id, state)
+    value = lego_device.module().sense(lego_device, sense)
+    {:reply, value, state}
+  end
+
+  @impl GenServer
+  def handle_cast({:actuate, device_id, action}, state) do
+    lego_device = find_device(device_id, state)
+    lego_device.module().actuate(lego_device, action)
+    {:noreply, state}
+  end
 
   ###
 
+  defp find_device(device_id, state) do
+    [type_s, port_s] = String.split(device_id, "_")
+    type = String.to_existing_atom(type_s)
+    port = String.to_existing_atom(port_s)
+    Enum.find(state.lego_sensors, &(&1.type == type and &1.port == port))
+  end
+
   defp initialize_devices() do
-    Logger.debug("[Body] Initialing devices on the BrickPi3...")
+    Logger.debug("[KarmaBody] Brickpi3 - Initialing devices on the BrickPi3...")
 
     Application.get_env(:karma_body, :brickpi3)
     |> Enum.reduce({[], []}, fn port_config, {sensors_acc, motors_acc} ->
@@ -91,7 +125,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
 
   defp initialize_device(device_class, port, device_type) do
     Logger.debug(
-      "[Body] Initializing #{inspect(device_type)} #{device_class} on port #{inspect(port)}"
+      "[KarmaBody] Brickpi3 - Initializing #{inspect(device_type)} #{device_class} on port #{inspect(port)}"
     )
 
     port_path = Sysfs.register_device(port, device_type)
@@ -104,5 +138,6 @@ defmodule KarmaBody.Platform.Brickpi3 do
     )
   end
 
-  defp to_logical_device(lego_device), do: lego_device.module.to_logical()
+  defp to_exposed_sensors(lego_device), do: lego_device.module.to_exposed_sensors()
+  defp to_exposed_actuators(lego_device), do: lego_device.module.to_exposed_actuators()
 end

@@ -1,22 +1,13 @@
 defmodule KarmaBody.Sensor do
   @moduledoc """
-  A sensor as
+  The sensor behaviour
   """
 
-  @type domain :: [any()]
-
-  @type t :: %__MODULE__{name: String.t(), device: struct(), domain: domain()}
-
-  defstruct name: nil,
-  # The platform-specific device
-  device: nil,
-  # The range of values that can be sensed in some order
-  domain: []
+  alias KarmaBody.Platform
 
   @doc """
-  Convert a Lego device to the logical device Karma.Agency expects
+  Ask a device to sense.
   """
-  @callback to_logical_device(any()) :: t()
-
-  @callback sense(t()) :: any() # TODO
+  @callback sense(Platform.device(), Platform.sense()) ::
+              String.t() | :integer
 end

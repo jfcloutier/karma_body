@@ -19,4 +19,9 @@ defmodule KarmaBodyWeb.BodyController do
     actuators = KarmaBody.actuators()
     render(conn, :index, actuators: actuators)
   end
+
+  def sense(conn, %{"id" => id, "sense" => sense}) do
+    value = KarmaBody.sense(id: id, sense: sense)
+    render(conn, :sensed, sensor: id, sensed: value)
+  end
 end

@@ -1,9 +1,12 @@
 defmodule KarmaBody.Actuator do
   @moduledoc """
-  An actuator
+  The actuator behaviour
   """
 
-  @type t :: %__MODULE__{name: String.t()}
+  alias KarmaBody.Platform
 
-  defstruct name: nil
+  @doc """
+  Ask a device to actuate.
+  """
+  @callback actuate(Platform.device(), Platform.action()) :: :ok
 end
