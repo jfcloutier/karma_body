@@ -42,7 +42,8 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   # /sys/class/lego-port/port0/spi0.1:S1:lego-ev3-touch/lego-sensor/sensor1
   defp attribute_path(port_path, device_class, device_type) do
     address = File.read!(Path.join(port_path, "address")) |> String.trim()
-    Path.join(port_path, ["#{address}:#{device_type}", "lego-#{device_class}", "sensor1"])
+    # "/sys/class/lego-port/port0/spi0.1:S1:touchlego-sensorsensor1"
+    Path.join(port_path, "#{address}:#{device_code(device_type)}/lego-#{device_class}/sensor1")
   end
 
   @doc "Get the typed value of an attribute of the device"

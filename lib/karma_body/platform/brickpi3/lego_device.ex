@@ -40,20 +40,14 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   Make a lego device.
   """
   @spec make(keyword()) :: t()
-  def make(
-        class: device_class,
-        type: device_type,
-        port: port,
-        port_path: port_path,
-        attribute_path: attribute_path
-      ) do
+  def make(props) do
     lego_device = %__MODULE__{
-      module: device_module_name(device_type),
-      class: device_class,
-      type: device_type,
-      port: port,
-      port_path: port_path,
-      attribute_path: attribute_path
+      module: device_module_name(props[:device_type]),
+      class: props[:device_class],
+      type: props[:device_type],
+      port: props[:port],
+      port_path: props[:port_path],
+      attribute_path: props[:attribute_path]
     }
 
     Logger.debug("[KarmaBody] LegoDevice - Made LegoDevice #{inspect(lego_device)}")

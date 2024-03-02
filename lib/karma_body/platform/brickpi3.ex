@@ -34,8 +34,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
   end
 
   @impl Platform
-  def device_id(%{type: device_type, port: port}), do:
-    "#{device_type}_#{port}"
+  def device_id(%{type: device_type, port: port}), do: "#{device_type}_#{port}"
 
   @impl Platform
   def device_type_from_id(device_id) do
@@ -65,8 +64,8 @@ defmodule KarmaBody.Platform.Brickpi3 do
 
   @impl GenServer
   def handle_call(:exposed_sensors, _from, state) do
-    sensors = (state.lego_sensors |> Enum.map(&to_exposed_sensors/1))
-    motor_sensors = (state.lego_motors |> Enum.map(&to_exposed_sensors/1))
+    sensors = state.lego_sensors |> Enum.map(&to_exposed_sensors/1)
+    motor_sensors = state.lego_motors |> Enum.map(&to_exposed_sensors/1)
     all_exposed_sensors = List.flatten(sensors ++ motor_sensors)
     {:reply, all_exposed_sensors, state}
   end
@@ -134,7 +133,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
       class: device_class,
       type: device_type,
       port: port,
-      path_path: port_path,
+      port_path: port_path,
       attribute_path: attribute_path
     )
   end
