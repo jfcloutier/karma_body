@@ -12,6 +12,7 @@ defmodule KarmaBody.Platform do
   @type exposed_device() :: %{
           id: device_id(),
           host: KarmaBody.host_url(),
+          class: KarmaBody.device_class(),
           type: KarmaBody.device_type(),
           capabilities: capabilities()
         }
