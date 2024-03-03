@@ -11,7 +11,7 @@ defmodule KarmaBody.Platform do
   @type capabilities :: %{sense: sense(), domain: domain()}
   @type exposed_device() :: %{
           id: device_id(),
-          url: KarmaBody.device_url(),
+          url: String.t(),
           class: KarmaBody.device_class(),
           type: KarmaBody.device_type(),
           capabilities: capabilities()

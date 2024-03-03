@@ -61,7 +61,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   def to_exposed_device(lego_device, capabilities) do
     %{
       id: KarmaBody.device_id(lego_device),
-      url: device_url(lego_device),
+      url: device_url(lego_device, capabilities),
       class: lego_device.class,
       type: lego_device.type,
       capabilities: capabilities
@@ -80,14 +80,14 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
     "#{__MODULE__}.#{name}" |> String.to_atom()
   end
 
-  defp device_url(lego_device) do
+  defp device_url(lego_device, capabilities) do
     host_url = KarmaBody.host_url()
     device_id = Brickpi3.device_id(lego_device)
 
     {verb, object} =
       case lego_device.class do
-        :sensor -> {"sense", lego_device.capabilities.sense}
-        :motor -> {"actuate", lego_device.capabilities.action}
+        :sensor -> {"sense", capabilities.sense}
+        :motor -> {"actuate", capabilities.action}
       end
 
     "#{host_url}/#{verb}/#{device_id}/#{object}"
