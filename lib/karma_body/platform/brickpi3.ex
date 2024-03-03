@@ -138,6 +138,6 @@ defmodule KarmaBody.Platform.Brickpi3 do
     )
   end
 
-  defp to_exposed_sensors(lego_device), do: lego_device.module.to_exposed_sensors()
-  defp to_exposed_actuators(lego_device), do: lego_device.module.to_exposed_actuators()
+  defp to_exposed_sensors(lego_device), do: lego_device.module.to_exposed_sensors(lego_device)
+  defp to_exposed_actuators(lego_device), do: lego_device.module.to_exposed_actuators(lego_device)
 end
