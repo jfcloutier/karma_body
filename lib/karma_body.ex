@@ -63,7 +63,8 @@ defmodule KarmaBody do
     props = Application.get_env(:karma_body, KarmaBodyWeb.Endpoint)[:http]
     scheme = Keyword.get(props, :scheme, "http")
     port = Keyword.get(props, :port, "4000")
-    "#{scheme}://#{props[:ip]}:#{port}"
+    {a1, a2, a3, a4} = props[:ip]
+    "#{scheme}://#{a1}.#{a2}.#{a3}.#{a4}:#{port}"
   end
 
   @spec device_id(Platform.device()) :: Platform.device_id()
