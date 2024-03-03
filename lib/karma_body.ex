@@ -58,13 +58,13 @@ defmodule KarmaBody do
   @doc """
   Get the URL of the body's host
   """
-  @spec host_url() :: host_url()
+  @spec host_url() :: String.t()
   def host_url() do
     props = Application.get_env(:karma_body, KarmaBodyWeb.Endpoint)[:http]
     scheme = Keyword.get(props, :scheme, "http")
     port = Keyword.get(props, :port, "4000")
     {a1, a2, a3, a4} = props[:ip]
-    "#{scheme}://#{a1}.#{a2}.#{a3}.#{a4}:#{port}"
+    "#{scheme}://#{a1}.#{a2}.#{a3}.#{a4}:#{port}/api"
   end
 
   @spec device_id(Platform.device()) :: Platform.device_id()

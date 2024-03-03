@@ -13,5 +13,5 @@ Assuming the body is hosted at `http://192.168.50.242:4000`:
 
 $ wget -q -O - http://192.168.50.242:4000/api/sense/touch_in1/contact
 
-{"sensor":"touch_in1","sensed":"released"}
+{"sensor":"touch_in1","sense":"contact","value":"released"}
 ```
