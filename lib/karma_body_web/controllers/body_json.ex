@@ -12,7 +12,8 @@ defmodule KarmaBodyWeb.BodyJSON do
   end
 
   def sensed(%{sensor: id, sensed: value}), do: %{sensor: id, sensed: value}
-  defp sensor_data(sensor), do: sensor
 
-  defp actuator_data(actuator), do: actuator
+  defp sensor_data(sensor), do: Map.drop(sensor, [:class])
+
+  defp actuator_data(actuator), do: Map.drop(actuator, [:class])
 end

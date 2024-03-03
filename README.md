@@ -2,9 +2,16 @@
 
 A Web app to access the actuators and sensors of a Lego robot's body, real or simulated.
 
-To start your Phoenix server:
+## REST API
 
-* Run `mix setup` to install and setup dependencies
-* Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+Assuming the body is hosted at `http://192.168.50.242:4000`:
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser
+```bash
+ $ wget -q -O - http://192.168.50.242:4000/api/sensors
+
+{"sensors":[{"id":"touch_in1","type":"touch","host":"http://192.168.50.242:4000","class":"sensor","capabilities":{"domain":["pressed","released"],"sense":"contact"}}]}
+
+$ wget -q -O - http://192.168.50.242:4000/api/sense/touch_in1/contact
+
+{"sensor":"touch_in1","sensed":"released"}
+```
