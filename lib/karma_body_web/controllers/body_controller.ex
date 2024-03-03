@@ -22,6 +22,6 @@ defmodule KarmaBodyWeb.BodyController do
 
   def sense(conn, %{"id" => id, "sense" => sense}) do
     value = KarmaBody.sense(id: id, sense: sense)
-    render(conn, :sensed, sensor: id, sensed: value)
+    render(conn, :sensed, sensor: id, sense: sense, value: value)
   end
 end
