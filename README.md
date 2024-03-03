@@ -2,6 +2,12 @@
 
 A Web app to access the actuators and sensors of a Lego robot's body, real or simulated.
 
+KarmaBody is responsible...
+
+* For detecting the connected sensors and motors
+* For providing, via HTTP, the list of sensors or motors, together with what they are* capable of and how to reach them
+* For answering HTTP requests to sense and to act
+
 ## Getting started
 
 Get yourself a Raspberry Pi3 and a [BrickPi3](https://www.dexterindustries.com/store/brickpi3-starter-kit/.)
