@@ -62,6 +62,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
     %{
       id: KarmaBody.device_id(lego_device),
       host: KarmaBody.host_url(),
+      class: lego_device.class,
       type: lego_device.type,
       capabilities: capabilities
     }
