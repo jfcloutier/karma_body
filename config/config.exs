@@ -12,7 +12,7 @@ config :karma_body,
 
 # Configures the endpoint
 config :karma_body, KarmaBodyWeb.Endpoint,
-  url: [host: "192.168.50.42"],
+  url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [json: KarmaBodyWeb.ErrorJSON],
