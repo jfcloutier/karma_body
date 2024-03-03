@@ -60,7 +60,7 @@ defmodule KarmaBody do
   """
   @spec host_url() :: host_url()
   def host_url() do
-    props = Application.get_env(:karma_body, KarmaBodyWeb.Endpoint)[:url]
+    props = Application.get_env(:karma_body, KarmaBodyWeb.Endpoint)[:http]
     scheme = Keyword.get(props, :scheme, "http")
     port = Keyword.get(props, :port, "4000")
     "#{scheme}://#{props[:ip]}:#{port}"
