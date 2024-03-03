@@ -63,22 +63,9 @@ defmodule KarmaBody do
     props = Application.get_env(:karma_body, KarmaBodyWeb.Endpoint)[:url]
     scheme = Keyword.get(props, :scheme, "http")
     port = Keyword.get(props, :port, "4000")
-    "#{scheme}://#{ip_address()}:#{port}"
+    "#{scheme}://#{props[:ip]}:#{port}"
   end
 
   @spec device_id(Platform.device()) :: Platform.device_id()
   def device_id(device), do: platform_module().device_id(device)
-
-  defp ip_address() do
-    {:ok, if_addresses} = :inet.getifaddrs()
-
-    Enum.find_value(if_addresses, fn {if_name, props} ->
-      if if_name == ~c"wlan0" do
-        {a1, a2, a3, a4} = props[:addr]
-        "#{a1}.#{a2}.#{a3}.#{a4}"
-      else
-        nil
-      end
-    end)
-  end
 end

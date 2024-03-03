@@ -6,10 +6,22 @@ import Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
+
+{:ok, if_addresses} = :inet.getifaddrs()
+
+ip_address =
+  Enum.find_value(if_addresses, fn {if_name, props} ->
+    if if_name == ~c"wlan0" do
+      props[:addr]
+    else
+      nil
+    end
+  end)
+
 config :karma_body, KarmaBodyWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {192, 168, 50, 242}, port: 4000],
+  http: [ip: ip_address, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
