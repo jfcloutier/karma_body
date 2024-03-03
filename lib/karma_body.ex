@@ -20,10 +20,10 @@ defmodule KarmaBody do
   @type device_class :: :sensor | :motor
 
   @spec actuators() :: [Platform.exposed_device()]
-  def actuators(), do: platform_module().actuators()
+  def actuators(), do: platform_module().exposerd_actuators()
 
   @spec sensors() :: [Platform.exposed_device()]
-  def sensors(), do: platform_module().sensors()
+  def sensors(), do: platform_module().exposed_sensors()
 
   @doc """
   Request a sensing from a device.
