@@ -4,13 +4,15 @@ A Web app to access the actuators and sensors of a Lego robot's body, real or si
 
 ## Getting started
 
+Get yourself a Raspberry Pi3 and a [BrickPi3](https://www.dexterindustries.com/store/brickpi3-starter-kit/.)
+
 ### Install Linux on the Raspberry Pi3 (RPI3)
 
 * Follow isntructions in [ev3dev.org](https://www.ev3dev.org/downloads/) to download zipped EV3Dev on RPI image
 * Unzip the zipped image
   * Use WindowInstaller (open app on image)
-* Follow the [BrickPi3 instructions](https://docs.ev3dev.org/en/ev3dev-stretch/platforms/brickpi3.html) and edit config.txt on SD Card
-*Plug SD Card in the RPI3, connect to ethernet both a PC and the RPI3
+* Follow the [BrickPi3 instructions](https://docs.ev3dev.org/en/ev3dev-stretch/platforms/brickpi3.html) and in the `config.txt` file itself,  and edit `config.txt` on the SD Card
+* Plug SD Card in the RPI3, connect to ethernet both a PC and the RPI3
 * Power up the RPI3
 * On the PC, open an SSH session on the RPI3 by doing `ssh robot@ev3dev.local`
   * The password is `maker`
