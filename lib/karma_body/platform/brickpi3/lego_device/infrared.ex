@@ -34,7 +34,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Infrared do
   def sense(ir_sensor, "proximity") do
     LegoDevice.set_operating_mode(ir_sensor, @proximity)
 
-    value = LegoDevice.get_attribute(ir_sensor, "value0", :integer)
+    value = LegoDevice.get_attribute(ir_sensor, "value#{(@channel - 1) * 2}", :integer)
 
     case value do
       100 -> :unknown

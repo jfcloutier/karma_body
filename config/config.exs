@@ -38,8 +38,8 @@ config :karma_body,
   brickpi3: [
     [port: :in1, sensor: :touch],
     [port: :in2, sensor: :light],
-    [port: :in3, sensor: :infrared]
-    # [port: :in4, sensor: :ultrasonic],
+    [port: :in3, sensor: :infrared],
+    [port: :in4, sensor: :ultrasonic]
     # # left
     # [port: :outA, motor: :large_tacho],
     # # right
