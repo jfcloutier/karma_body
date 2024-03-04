@@ -12,7 +12,11 @@ KarmaBody is responsible...
 
 Get yourself a Raspberry Pi3 and a [BrickPi3](https://www.dexterindustries.com/store/brickpi3-starter-kit/.)
 
+You'll also need a [LEGO Mindstorms EV3 kit](https://www.lego.com/en-us/product/lego-mindstorms-ev3-31313). It is, sadly, a retired product, but you'll easily find a second-hand kit for sale in the usual places.
+
 ### Install Linux on the Raspberry Pi3 (RPI3)
+
+The first step is to burn the EV3Dev ditribution of Linux on a micro SD Card.
 
 * Follow isntructions in [ev3dev.org](https://www.ev3dev.org/downloads/) to download zipped EV3Dev on RPI image
 * Unzip the zipped image
@@ -39,6 +43,8 @@ deb http://archive.debian.org/debian stretch main contrib non-free
 
 ### Enable WiFi on the RPI3
 
+You'll want the RPI3 to network via WiFi.
+
 * Enable and setup WiFi as instructed [here](https://www.ev3dev.org/docs/tutorials/setting-up-wifi-using-the-command-line/)
 
 ```bash
@@ -52,16 +58,18 @@ connmanctl> quit
 ```
 
 * Get the RPI3's ip address on wlan0 by doing `ifconfig`
-* On the PC, edit `/etc/hosts` to add a `brickpi3` alias for the ip address
+* On the PC, edit `/etc/hosts` to add a `brickpi3` alias for the ip address.
 
 ### Create a user `dev` on the RPI3 and login as `dev`
+
+The EV3Dev distribution comes with a pre-defined user named `robot`. Though it is not required, create a new user named `dev` and assign a password.
 
 * In the RPI3 SSH session, do
   * `sudo adduser dev`
   * `sudo usermod -aG sudo dev`
 
 * Close the SSH session
-* Unplug ethe Ethernet cable from the RPI3
+* Unplug the Ethernet cable from the RPI3
 * Put the PC on the same wifi network enabled on the RPI3
 * Start a new SSH session on the RPI3 with `ssh dev@brickpi3`
 
@@ -71,7 +79,11 @@ sudo dpkg-reconfigure tzdata
 
 ### Install Erlang and Elixir using `asdf`
 
-* Install ASDF
+KarmaBody is an Elixir web app. It requires Erlang (the runtime platform) and Elixir (the programming language) to be installed. 
+
+The ASDF utility is used to do the installation.
+
+* First, install ASDF
 
 ``` bash
 sudo apt install curl git
@@ -123,6 +135,8 @@ source ~/.bashrc
 
 ### Clone the Github repo
 
+In an SSH session (`ssh dev@brickpi3`), clone the `karma_body` code repository on the RPI3.
+
 ``` bash
 cd ~
 git clone https://github.com/jfcloutier/karma_body.git
@@ -138,6 +152,8 @@ git pull
 ```
 
 ### Connecting the BrickPi3 board
+
+The BrickPi3 piggy-backs on the RPI3.
 
 * Power off the RPI3
 * Connect the BrickPi3 board to the RPI3
