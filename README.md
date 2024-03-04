@@ -46,7 +46,7 @@ connmanctl
 connmanctl> enable wifi
 connmanctl> scan wifi
 connmanctl> services
-connmanctl> agent on	
+connmanctl> agent on 
 connmanctl> connect wifi_...
 connmanctl> quit
 ```
@@ -128,6 +128,15 @@ cd ~
 git clone https://github.com/jfcloutier/karma_body.git
 ```
 
+To update to the latest,
+
+* Open an SSH session on `dev@brickpi3` and do
+
+``` bash
+cd ~/karma_body
+git pull
+```
+
 ### Connecting the BrickPi3 board
 
 * Power off the RPI3
@@ -135,6 +144,41 @@ git clone https://github.com/jfcloutier/karma_body.git
 * Power on the RPI3 and open an SSH session to it via `ssh dev@brickpi3`
 * Update its firmware if not running the latest by doing `sudo update-brickpi3-fw`
 * Verify all is well with `ev3dev-sysinfo`
+
+### Configuration
+
+The BrickPi3 board needs to be told what kinds of devices are connected to its ports.
+
+The information is provided in `~/karma_body/config.exs`. Edit the `brickpi3` section to reflect the actual configuration of sensors and motors.
+
+For example:
+
+``` elixir
+config :karma_body,
+  brickpi3: [
+    [port: :in1, sensor: :touch]
+    [port: :in2, sensor: :color],
+    [port: :in3, sensor: :infrared],
+    [port: :in4, sensor: :ultrasonic],
+    # left
+    [port: :outA, motor: :large_tacho],
+    # right
+    [port: :outB, motor: :large_tacho]
+  ]
+```
+
+See `~/karma_body/lib/karma_body.ex` for the names of all supported devices, and `~/karma_body/lib/karma_body/platform/brickpi3.ex` for the list of all ports.
+
+### Run KarmaBody
+
+To run karma_body,
+
+* Open an SSH session on `dev@brickpi3` and do
+
+``` bash
+cd ~/karma_body
+iex -S mix phx.server
+```
 
 ## REST API
 
