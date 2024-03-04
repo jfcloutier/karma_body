@@ -37,7 +37,7 @@ config :karma_body,
 config :karma_body,
   brickpi3: [
     [port: :in1, sensor: :touch],
-    [port: :in2, sensor: :color]
+    [port: :in2, sensor: :light]
     # [port: :in3, sensor: :infrared],
     # [port: :in4, sensor: :ultrasonic],
     # # left

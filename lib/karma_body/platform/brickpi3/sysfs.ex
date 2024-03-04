@@ -1,6 +1,8 @@
 defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   @moduledoc "Interface to BrickPi3 sysfs device files"
 
+  alias KarmaBody.Platform.Brickpi3.LegoDevice
+
   require Logger
 
   @type port_name ::
@@ -21,7 +23,7 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   @doc """
   Associate the port with a device mode
   """
-  @spec register_device(KarmaBody.device_class(), port_name(), KarmaBody.device_type()) ::
+  @spec register_device(KarmaBody.device_class(), port_name(), LegoDevice.device_type()) ::
           {String.t(), String.t()}
   def register_device(device_class, port, device_type) do
     port_path = "#{@ports_path}/port#{port_number(port)}"
@@ -139,7 +141,7 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
       :infrared -> "ev3-uart"
       :touch -> "ev3-analog"
       :gyro -> "ev3-uart"
-      :color -> "ev3-uart"
+      :light -> "ev3-uart"
       :ultrasonic -> "ev3-uart"
       :ir_seeker -> "nxt-i2c"
       :large_tacho -> "tacho-motor"
@@ -152,7 +154,7 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
       :infrared -> "lego-ev3-ir"
       :touch -> "lego-ev3-touch"
       :gyro -> "lego-ev3-gyro"
-      :color -> "lego-ev3-color"
+      :light -> "lego-ev3-color"
       :ultrasonic -> "lego-ev3-us"
       :ir_seeker -> "ht-nxt-ir-seek-v2 0x08"
       :large_tacho -> "lego-ev3-l-motor"

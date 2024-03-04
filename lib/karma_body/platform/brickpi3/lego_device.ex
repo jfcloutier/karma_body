@@ -9,13 +9,26 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
 
   require Logger
 
+  @typedoc """
+  Lego device types
+  """
+  @type device_type ::
+          :infrared
+          | :touch
+          | :gyro
+          | :light
+          | :ultrasonic
+          | :ir_seeker
+          | :large_tacho
+          | :medium_tacho
+
   @type t :: %__MODULE__{
           # The module implementing the device
           module: module(),
           # Whether a sensor or motor device
           class: KarmaBody.device_class(),
           # The type of sensor or motor
-          type: KarmaBody.device_type(),
+          type: device_type(),
           # The name of the port occupied by the device
           port: Brickpi3.device_port(),
           # Path to the lego port where mode and device can be set
@@ -93,12 +106,12 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
     host_url = KarmaBody.host_url()
     device_id = Brickpi3.device_id(lego_device)
 
-    {verb, object} =
+    {verb, modifier} =
       case lego_device.class do
         :sensor -> {"sense", capabilities.sense}
         :motor -> {"actuate", capabilities.action}
       end
 
-    "#{host_url}/#{verb}/#{device_id}/#{object}"
+    "#{host_url}/#{verb}/#{device_id}/#{modifier}"
   end
 end

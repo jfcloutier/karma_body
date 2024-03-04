@@ -7,15 +7,10 @@ defmodule KarmaBody do
 
   @type host_url :: String.t()
 
-  @type device_type ::
-          :infrared
-          | :touch
-          | :gyro
-          | :color
-          | :ultrasonic
-          | :ir_seeker
-          | :large_tacho
-          | :medium_tacho
+  @typedoc """
+  Device type from any of the supported platforms. Currently only Lego device types.
+  """
+  @type device_type :: KarmaBody.Platform.Brickpi3.LegoDevice.device_type()
 
   @type device_class :: :sensor | :motor
 
