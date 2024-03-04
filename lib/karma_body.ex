@@ -14,6 +14,8 @@ defmodule KarmaBody do
 
   @type device_class :: :sensor | :motor
 
+  @type sensed_value :: String.t() | integer() | :unknown
+
   @spec actuators() :: [Platform.exposed_device()]
   def actuators(), do: platform_module().exposerd_actuators()
 
@@ -23,7 +25,7 @@ defmodule KarmaBody do
   @doc """
   Request a sensing from a device.
   """
-  @spec sense(id: String.t(), sense: String.t()) :: any()
+  @spec sense(id: String.t(), sense: String.t()) :: sensed_value()
   def sense(id: device_id, sense: sense), do: platform_module().sense(device_id, sense)
 
   @doc """

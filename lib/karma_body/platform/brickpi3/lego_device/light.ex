@@ -37,7 +37,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Light do
     LegoDevice.set_operating_mode(light_sensor, @color)
 
     case LegoDevice.get_attribute(light_sensor, "value0", :integer) do
-      0 -> "unknown"
+      0 -> :unknown
       1 -> "black"
       2 -> "blue"
       3 -> "green"

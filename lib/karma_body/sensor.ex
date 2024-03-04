@@ -9,5 +9,5 @@ defmodule KarmaBody.Sensor do
   Ask a device to sense.
   """
   @callback sense(Platform.device(), Platform.sense()) ::
-              String.t() | :integer
+              KarmaBody.sensed_value()
 end
