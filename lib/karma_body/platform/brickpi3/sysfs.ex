@@ -16,6 +16,7 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   @type attribute_type :: :string | :atom | :percent | :integer | :list
 
   @ports_path "/sys/class/lego-port"
+  @mode_switch_delay 100
 
   @doc """
   Associate the port with a device mode
@@ -38,15 +39,32 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
     {port_path, attribute_path}
   end
 
-  # cat /sys/class/lego-port/port0/address => spi0.1:S1
-  # /sys/class/lego-port/port0/spi0.1:S1:lego-ev3-touch/lego-sensor/sensor1
+  @doc "Set the device's operating mode"
+  @spec set_operating_mode(String.t(), String.t()) :: :ok
+  def set_operating_mode(path, mode) do
+    current_mode = get_attribute(path, "mode", :string)
 
-  # /sys/class/lego-port/port0/spi0.1:S1:lego-ev3-touch/lego-sensor/sensor1
-  defp attribute_path(port_path, device_class, device_type) do
-    address = File.read!(Path.join(port_path, "address")) |> String.trim()
-    dir = Path.join(port_path, "#{address}:#{device_code(device_type)}/lego-#{device_class}")
-    {:ok, [sensor_dir | _]} = File.ls(dir)
-    Path.join(dir, sensor_dir)
+    if current_mode != mode do
+      Logger.info(
+        "[KarmBody] Switching mode of #{path} to #{inspect(mode)} from #{inspect(current_mode)}"
+      )
+
+      set_attribute(path, "mode", mode)
+      # Give time for the mode switch
+      :timer.sleep(@mode_switch_delay)
+
+      case get_attribute(path, "mode", :string) do
+        same_mode when same_mode == mode ->
+          :ok
+
+        other ->
+          Logger.warning("[KarmaBody] Mode is still #{other}. Retrying to set mode to #{mode}")
+          :timer.sleep(@mode_switch_delay)
+          set_operating_mode(path, mode)
+      end
+    else
+      :ok
+    end
   end
 
   @doc "Get the typed value of an attribute of the device"
@@ -103,6 +121,17 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   def execute_stop_action(device, command) do
     true = command in device.props.stop_actions
     write_sys(device.path, "stop_action", command)
+  end
+
+  # cat /sys/class/lego-port/port0/address => spi0.1:S1
+  # /sys/class/lego-port/port0/spi0.1:S1:lego-ev3-touch/lego-sensor/sensor1
+
+  # /sys/class/lego-port/port0/spi0.1:S1:lego-ev3-touch/lego-sensor/sensor1
+  defp attribute_path(port_path, device_class, device_type) do
+    address = File.read!(Path.join(port_path, "address")) |> String.trim()
+    dir = Path.join(port_path, "#{address}:#{device_code(device_type)}/lego-#{device_class}")
+    {:ok, [sensor_dir | _]} = File.ls(dir)
+    Path.join(dir, sensor_dir)
   end
 
   defp device_mode(device_type) do

@@ -24,6 +24,8 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
           attribute_path: String.t()
         }
 
+  @type operating_mode() :: String.t()
+
   defstruct module: nil, class: nil, type: nil, port: nil, port_path: nil, attribute_path: nil
 
   @doc """
@@ -67,6 +69,13 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
       capabilities: capabilities
     }
   end
+
+  @doc """
+  Set the device mode.
+  """
+  @spec set_operating_mode(t(), operating_mode()) :: :ok
+  def set_operating_mode(lego_device, mode),
+    do: Sysfs.set_operating_mode(lego_device.attribute_path, mode)
 
   @doc """
   Get the device's attribute value from the file system.
