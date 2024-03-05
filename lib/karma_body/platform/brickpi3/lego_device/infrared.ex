@@ -15,21 +15,23 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Infrared do
   def to_exposed_sensors(ir_sensor) do
     channels = ir_sensor.options |> Keyword.get(:channels, [1])
 
-    for channel <- channels,
-        do:
-          [
-            LegoDevice.to_exposed_device(ir_sensor, %{
-              sense: "proximity_#{channel}",
-              # in cm
-              domain: %{from: 0, to: 70}
-            }),
+    heading_senses =
+      for channel <- channels,
+          do:
             LegoDevice.to_exposed_device(ir_sensor, %{
               sense: "heading_#{channel}",
               # -25 is far left, + 25 is far right
               domain: %{from: -25, to: 25}
             })
-          ]
-          |> List.flatten()
+
+    [
+      LegoDevice.to_exposed_device(ir_sensor, %{
+        sense: "proximity",
+        # in cm
+        domain: %{from: 0, to: 70}
+      })
+      | heading_senses
+    ]
   end
 
   @impl LegoDevice
@@ -37,24 +39,22 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Infrared do
 
   @impl KarmaBody.Sensor
 
-  def sense(ir_sensor, sense_channel) do
-    [sense, channel_s] = String.split(sense_channel, "_")
+  def sense(ir_sensor, "proximity") do
+    LegoDevice.set_operating_mode(ir_sensor, @proximity)
+
+    value = LegoDevice.get_attribute(ir_sensor, "value0", :integer)
+
+    case value do
+      100 -> :unknown
+      percent -> round(percent / 100 * 70)
+    end
+  end
+
+  def sense(ir_sensor, heading_channel) do
+    ["heading", channel_s] = String.split(heading_channel, "_")
     {channel, _} = Integer.parse(channel_s)
 
-    case sense do
-      "proximity" ->
-        LegoDevice.set_operating_mode(ir_sensor, @proximity)
-
-        value = LegoDevice.get_attribute(ir_sensor, "value#{(channel - 1) * 2}", :integer)
-
-        case value do
-          100 -> :unknown
-          percent -> round(percent / 100 * 70)
-        end
-
-      "heading" ->
-        LegoDevice.set_operating_mode(ir_sensor, @heading)
-        LegoDevice.get_attribute(ir_sensor, "value#{(channel - 1) * 2}", :integer)
-    end
+    LegoDevice.set_operating_mode(ir_sensor, @heading)
+    LegoDevice.get_attribute(ir_sensor, "value#{(channel - 1) * 2}", :integer)
   end
 end
