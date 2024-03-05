@@ -176,10 +176,8 @@ config :karma_body,
     [port: :in2, sensor: :light],
     [port: :in3, sensor: :infrared],
     [port: :in4, sensor: :ultrasonic],
-    # left
-    [port: :outA, motor: :large_tacho],
-    # right
-    [port: :outB, motor: :large_tacho]
+    [port: :outA, motor: :tacho_motor],
+    [port: :outB, motor: :tacho_motor]
   ]
 ```
 

@@ -31,7 +31,7 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
     File.write!("#{port_path}/mode", device_mode)
     :timer.sleep(500)
     # If the device is not self-loading
-    if device_type not in [:touch, :large_tacho, :medium_tacho] do
+    if device_type not in [:touch, :tacho_motor] do
       device_code = device_code(device_type)
       :timer.sleep(500)
       File.write!("#{port_path}/set_device", device_code)
@@ -132,8 +132,8 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   defp attribute_path(port_path, device_class, device_type) do
     address = File.read!(Path.join(port_path, "address")) |> String.trim()
     dir = Path.join(port_path, "#{address}:#{device_code(device_type)}/lego-#{device_class}")
-    {:ok, [sensor_dir | _]} = File.ls(dir)
-    Path.join(dir, sensor_dir)
+    {:ok, [device_dir | _]} = File.ls(dir)
+    Path.join(dir, device_dir)
   end
 
   defp device_mode(device_type) do
@@ -143,9 +143,7 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
       :gyro -> "ev3-uart"
       :light -> "ev3-uart"
       :ultrasonic -> "ev3-uart"
-      :ir_seeker -> "nxt-i2c"
-      :large_tacho -> "tacho-motor"
-      :medium_tacho -> "tacho-motor"
+      :tacho_motor -> "tacho-motor"
     end
   end
 
@@ -156,9 +154,7 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
       :gyro -> "lego-ev3-gyro"
       :light -> "lego-ev3-color"
       :ultrasonic -> "lego-ev3-us"
-      :ir_seeker -> "ht-nxt-ir-seek-v2 0x08"
-      :large_tacho -> "lego-ev3-l-motor"
-      :medium_tacho -> "lego-ev3-m-motor"
+      :tacho_motor -> "lego-nxt-motor"
     end
   end
 

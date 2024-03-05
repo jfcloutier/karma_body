@@ -18,9 +18,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
           | :gyro
           | :light
           | :ultrasonic
-          | :ir_seeker
-          | :large_tacho
-          | :medium_tacho
+          | :tacho_motor
 
   @type t :: %__MODULE__{
           # The module implementing the device
