@@ -100,8 +100,6 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
 
   @doc "Reading a line from a file"
   def read_sys(dir, file) do
-    Logger.warning("READING #{dir}/#{file}")
-
     [line] =
       File.stream!("#{dir}/#{file}")
       |> Stream.take(1)
