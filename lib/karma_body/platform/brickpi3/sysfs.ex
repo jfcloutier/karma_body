@@ -132,6 +132,7 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   defp attribute_path(port_path, device_class, device_type) do
     address = File.read!(Path.join(port_path, "address")) |> String.trim()
     dir = Path.join(port_path, "#{address}:#{device_code(device_type)}/lego-#{device_class}")
+    Logger.warning("DEVICE PARENT DIR is #{inspect(dir)}")
     {:ok, [device_dir | _]} = File.ls(dir)
     Path.join(dir, device_dir)
   end
