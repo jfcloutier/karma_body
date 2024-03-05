@@ -36,10 +36,11 @@ config :karma_body,
 
 config :karma_body,
   brickpi3: [
-    # [port: :in1, sensor: :touch],
-    [port: :in1, sensor: :gyro],
+    [port: :in1, sensor: :touch],
+    # [port: :in1, sensor: :gyro],
     [port: :in2, sensor: :light],
-    [port: :in3, sensor: :infrared],
+    # The infrared sensor senses channels 1 and 2 of the IR beacon
+    [port: :in3, sensor: :infrared, channels: [1, 2]],
     [port: :in4, sensor: :ultrasonic]
     # # left
     # [port: :outA, motor: :large_tacho],

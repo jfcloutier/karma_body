@@ -34,12 +34,20 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
           # Path to the lego port where mode and device can be set
           port_path: String.t(),
           # Path to where the device attribute values can be written and read
-          attribute_path: String.t()
+          attribute_path: String.t(),
+          # device options
+          options: keyword()
         }
 
   @type operating_mode() :: String.t()
 
-  defstruct module: nil, class: nil, type: nil, port: nil, port_path: nil, attribute_path: nil
+  defstruct module: nil,
+            class: nil,
+            type: nil,
+            port: nil,
+            port_path: nil,
+            attribute_path: nil,
+            options: []
 
   @doc """
   Convert a lego device into one or more exposed sensor devices.
@@ -62,7 +70,8 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
       type: props[:type],
       port: props[:port],
       port_path: props[:port_path],
-      attribute_path: props[:attribute_path]
+      attribute_path: props[:attribute_path],
+      options: props[:options]
     }
 
     Logger.debug("[KarmaBody] LegoDevice - Made LegoDevice #{inspect(lego_device)}")
