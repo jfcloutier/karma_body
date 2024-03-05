@@ -37,8 +37,10 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Infrared do
   @impl LegoDevice
   def to_exposed_actuators(_), do: []
 
-  @impl KarmaBody.Sensor
+  @impl LegoDevice
+  def initialize_platform(_options), do: :ok
 
+  @impl KarmaBody.Sensor
   def sense(ir_sensor, "proximity") do
     LegoDevice.set_operating_mode(ir_sensor, @proximity)
 

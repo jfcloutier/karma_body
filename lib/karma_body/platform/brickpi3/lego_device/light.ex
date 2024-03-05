@@ -32,6 +32,9 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Light do
   @impl LegoDevice
   def to_exposed_actuators(_), do: []
 
+  @impl LegoDevice
+  def initialize_platform(_options), do: :ok
+
   @impl KarmaBody.Sensor
   def sense(light_sensor, "color") do
     LegoDevice.set_operating_mode(light_sensor, @color)

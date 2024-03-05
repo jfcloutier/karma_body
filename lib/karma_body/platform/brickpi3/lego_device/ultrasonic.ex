@@ -21,6 +21,9 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Ultrasonic do
     ]
 
   @impl LegoDevice
+  def initialize_platform(_options), do: :ok
+
+  @impl LegoDevice
   def to_exposed_actuators(_), do: []
 
   @impl KarmaBody.Sensor

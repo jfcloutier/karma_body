@@ -60,12 +60,19 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   @callback to_exposed_actuators(t()) :: [Platform.exposed_device()]
 
   @doc """
+  Initialize the lego device's platform state given the device's options.
+  """
+  @callback initialize_platform(keyword()) :: :ok
+
+  @doc """
   Make a lego device.
   """
   @spec make(keyword()) :: t()
   def make(props) do
+    device_module = device_module_name(props[:type])
+
     lego_device = %__MODULE__{
-      module: device_module_name(props[:type]),
+      module: device_module,
       class: props[:class],
       type: props[:type],
       port: props[:port],
@@ -74,7 +81,12 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
       options: props[:options]
     }
 
-    Logger.debug("[KarmaBody] LegoDevice - Made LegoDevice #{inspect(lego_device)}")
+    device_module.initialize_platform(lego_device.options)
+
+    Logger.debug(
+      "[KarmaBody] LegoDevice - Made and initialized LegoDevice #{inspect(lego_device)}"
+    )
+
     lego_device
   end
 
