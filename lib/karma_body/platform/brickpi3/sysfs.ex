@@ -139,7 +139,6 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
       end
 
     dir = Path.join(port_path, "#{address}:#{device_code(device_type)}/#{lego_dir}")
-    Logger.warning("DEVICE PARENT DIR is #{inspect(dir)}")
     {:ok, [device_dir | _]} = File.ls(dir)
     Path.join(dir, device_dir)
   end

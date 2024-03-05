@@ -8,7 +8,7 @@ defmodule KarmaBody.Platform do
   @type sense() :: String.t()
   @type action() :: String.t()
   @type domain :: [String.t()] | :percent | %{from: integer(), to: integer()}
-  @type capabilities :: %{sense: sense(), domain: domain()}
+  @type capabilities :: %{sense: sense(), domain: domain()} | %{action: action}
   @type exposed_device() :: %{
           id: device_id(),
           url: String.t(),
