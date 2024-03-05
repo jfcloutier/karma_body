@@ -13,7 +13,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Infrared do
 
   @impl LegoDevice
   def to_exposed_sensors(ir_sensor) do
-    channels = ir_sensor[:options] |> Keyword.get(:channels, [1])
+    channels = ir_sensor.options |> Keyword.get(:channels, [1])
 
     for channel <- channels,
         do:
