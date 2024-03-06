@@ -97,13 +97,13 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
 
   def sense(tacho_motor, "speed") do
     speed = LegoDevice.get_attribute(tacho_motor, "speed", :integer)
-    speed_to_rpm(speed, tacho_motor[:properties][:count_per_rot])
+    speed_to_rpm(speed, tacho_motor.properties[:count_per_rot])
   end
 
   defp max_rpm(tacho_motor) do
     # in tacho counts
-    max_speed = tacho_motor[:properties][:max_speed]
-    count_per_rot = tacho_motor[:properties][:count_per_rot]
+    max_speed = tacho_motor.properties[:max_speed]
+    count_per_rot = tacho_motor.properties[:count_per_rot]
     speed_to_rpm(max_speed, count_per_rot)
   end
 
