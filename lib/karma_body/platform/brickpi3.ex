@@ -74,14 +74,14 @@ defmodule KarmaBody.Platform.Brickpi3 do
     do: {:reply, state.lego_motors |> Enum.map(&to_exposed_actuators/1) |> List.flatten(), state}
 
   def handle_call({:sense, device_id, sense}, _from, state) do
-    lego_device = find_device(state.lego_sensors ++ state.lego_motor, device_id)
+    lego_device = find_device(state.lego_sensors ++ state.lego_motors, device_id)
     value = lego_device.module().sense(lego_device, sense)
     {:reply, value, state}
   end
 
   @impl GenServer
   def handle_cast({:actuate, device_id, action}, state) do
-    lego_device = find_device(state.lego_motor, device_id)
+    lego_device = find_device(state.lego_motors, device_id)
     lego_device.module().actuate(lego_device, action)
     {:noreply, state}
   end
