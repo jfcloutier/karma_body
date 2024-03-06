@@ -34,11 +34,11 @@ defmodule KarmaBody.Platform.Brickpi3 do
   end
 
   @impl Platform
-  def device_id(%{type: device_type, port: port}), do: "#{device_type}_#{port}"
+  def device_id(%{type: device_type, port: port}), do: "#{device_type}-#{port}"
 
   @impl Platform
   def device_type_from_id(device_id) do
-    [type_s, _] = String.split(device_id, "_")
+    [type_s, _] = String.split(device_id, "-")
     String.to_existing_atom(type_s)
   end
 
@@ -89,7 +89,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
   ###
 
   defp find_device(device_id, state) do
-    [type_s, port_s] = String.split(device_id, "_")
+    [type_s, port_s] = String.split(device_id, "-")
     type = String.to_existing_atom(type_s)
     port = String.to_existing_atom(port_s)
     Enum.find(state.lego_sensors, &(&1.type == type and &1.port == port))
