@@ -139,9 +139,9 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
     device_id = Brickpi3.device_id(lego_device)
 
     {verb, modifier} =
-      case lego_device.class do
-        :sensor -> {"sense", capabilities.sense}
-        :motor -> {"actuate", capabilities.action}
+      cond do
+        Map.has_key?(capabilities, :domain) -> {"sense", capabilities.sense}
+        Map.has_key?(capabilities, :action) -> {"actuate", capabilities.action}
       end
 
     "#{host_url}/#{verb}/#{device_id}/#{modifier}"
