@@ -17,7 +17,7 @@ defmodule KarmaBody do
   @type sensed_value :: String.t() | integer() | :unknown
 
   @spec actuators() :: [Platform.exposed_device()]
-  def actuators(), do: platform_module().exposerd_actuators()
+  def actuators(), do: platform_module().exposed_actuators()
 
   @spec sensors() :: [Platform.exposed_device()]
   def sensors(), do: platform_module().exposed_sensors()

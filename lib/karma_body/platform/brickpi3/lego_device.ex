@@ -33,8 +33,8 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
           port_path: String.t(),
           # Path to where the device attribute values can be written and read
           attribute_path: String.t(),
-          # device options
-          options: keyword()
+          # device options and constants
+          properties: keyword()
         }
 
   @type operating_mode() :: String.t()
@@ -45,7 +45,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
             port: nil,
             port_path: nil,
             attribute_path: nil,
-            options: []
+            properties: []
 
   @doc """
   Convert a lego device into one or more exposed sensor devices.
@@ -58,28 +58,34 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   @callback to_exposed_actuators(t()) :: [Platform.exposed_device()]
 
   @doc """
-  Initialize the lego device's platform state given the device's options.
+  Initialize the lego device's platform state given the device's properties.
   """
-  @callback initialize_platform(keyword()) :: :ok
+  @callback initialize_platform(t()) :: :ok
+
+  @doc """
+  Get the important constant-valued properties of the device
+  """
+  @callback set_constants(t()) :: t()
 
   @doc """
   Make a lego device.
   """
   @spec make(keyword()) :: t()
-  def make(props) do
-    device_module = device_module_name(props[:type])
+  def make(kw) do
+    device_module = device_module_name(kw[:type])
 
     lego_device = %__MODULE__{
       module: device_module,
-      class: props[:class],
-      type: props[:type],
-      port: props[:port],
-      port_path: props[:port_path],
-      attribute_path: props[:attribute_path],
-      options: props[:options]
+      class: kw[:class],
+      type: kw[:type],
+      port: kw[:port],
+      port_path: kw[:port_path],
+      attribute_path: kw[:attribute_path],
+      properties: kw[:properties]
     }
 
-    device_module.initialize_platform(lego_device.options)
+    lego_device = device_module.set_constants(lego_device)
+    device_module.initialize_platform(lego_device)
 
     Logger.debug(
       "[KarmaBody] LegoDevice - Made and initialized LegoDevice #{inspect(lego_device)}"
@@ -115,6 +121,13 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   @spec get_attribute(t(), String.t(), Sysfs.attribute_type()) :: any()
   def get_attribute(lego_device, attribute, attribute_type),
     do: Sysfs.get_attribute(lego_device.attribute_path, attribute, attribute_type)
+
+  @doc """
+  Set the device's attribute value in the file system.
+  """
+  @spec set_attribute(t(), String.t(), any()) :: :ok
+  def set_attribute(lego_device, attribute, value),
+    do: Sysfs.set_attribute(lego_device.attribute_path, attribute, value)
 
   defp device_module_name(device_type) do
     name = device_type |> Atom.to_string() |> Macro.camelize()

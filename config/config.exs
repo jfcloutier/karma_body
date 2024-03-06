@@ -42,9 +42,9 @@ config :karma_body,
     # The infrared sensor senses channels 1 and 2 of the IR beacon
     [port: :in3, sensor: :infrared, channels: [1, 2]],
     [port: :in4, sensor: :ultrasonic],
-    [port: :outA, motor: :tacho_motor, polarity: :normal, rotations_per_second: 1],
-    [port: :outB, motor: :tacho_motor, polarity: :normal, rotations_per_second: 1],
-    [port: :outC, motor: :tacho_motor, polarity: :normal, rotations_per_second: 2.5]
+    [port: :outA, motor: :tacho_motor, polarity: "normal", rpm: 60, burst_secs: 1],
+    [port: :outB, motor: :tacho_motor, polarity: "normal", rpm: 60, burst_secs: 1],
+    [port: :outC, motor: :tacho_motor, polarity: "normal", rpm: 120, burst_secs: 5]
   ]
 
 # Import environment specific config. This must remain at the bottom

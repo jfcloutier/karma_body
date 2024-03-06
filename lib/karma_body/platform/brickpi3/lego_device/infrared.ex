@@ -13,7 +13,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Infrared do
 
   @impl LegoDevice
   def to_exposed_sensors(ir_sensor) do
-    channels = ir_sensor.options |> Keyword.get(:channels, [1])
+    channels = ir_sensor.properties |> Keyword.get(:channels, [1])
 
     heading_senses =
       for channel <- channels,
@@ -38,7 +38,10 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Infrared do
   def to_exposed_actuators(_), do: []
 
   @impl LegoDevice
-  def initialize_platform(_options), do: :ok
+  def initialize_platform(_device), do: :ok
+
+  @impl LegoDevice
+  def set_constants(device), do: device
 
   @impl KarmaBody.Sensor
   def sense(ir_sensor, "proximity") do

@@ -21,7 +21,10 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Touch do
   def to_exposed_actuators(_), do: []
 
   @impl LegoDevice
-  def initialize_platform(_options), do: :ok
+  def initialize_platform(_device), do: :ok
+
+  @impl LegoDevice
+  def set_constants(device), do: device
 
   @impl KarmaBody.Sensor
   def sense(touch_sensor, "contact") do

@@ -115,20 +115,22 @@ defmodule KarmaBody.Platform.Brickpi3 do
   defp initialize_sensor(config) do
     port = config[:port]
     sensor_name = config[:sensor]
-    options = Keyword.drop(config, [:port, :sensor])
-    initialize_device(:sensor, port, sensor_name, options)
+    # Anything other than port and sensor is a property
+    properties = Keyword.drop(config, [:port, :sensor])
+    initialize_device(:sensor, port, sensor_name, properties)
   end
 
   defp initialize_motor(config) do
     port = config[:port]
     motor_name = config[:motor]
-    options = Keyword.drop(config, [:port, :motor])
-    initialize_device(:motor, port, motor_name, options)
+    # Anything other than port and motor is a property
+    properties = Keyword.drop(config, [:port, :motor])
+    initialize_device(:motor, port, motor_name, properties)
   end
 
-  defp initialize_device(device_class, port, device_type, options) do
+  defp initialize_device(device_class, port, device_type, properties) do
     Logger.debug(
-      "[KarmaBody] Brickpi3 - Initializing #{inspect(device_type)} #{device_class} on port #{inspect(port)} with options #{inspect(options)}}"
+      "[KarmaBody] Brickpi3 - Initializing #{inspect(device_type)} #{device_class} on port #{inspect(port)} with properties #{inspect(properties)}}"
     )
 
     {port_path, attribute_path} = Sysfs.register_device(device_class, port, device_type)
@@ -139,7 +141,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
       port: port,
       port_path: port_path,
       attribute_path: attribute_path,
-      options: options
+      properties: properties
     )
   end
 
