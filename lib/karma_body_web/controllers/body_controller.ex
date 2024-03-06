@@ -33,6 +33,6 @@ defmodule KarmaBodyWeb.BodyController do
   """
   def actuate(conn, %{"id" => id, "action" => action}) do
     value = KarmaBody.actuate(id: id, action: action)
-    render(conn, :actuated, sensor: id, action: action, value: value)
+    render(conn, :actuated, actuator: id, action: action, value: value)
   end
 end
