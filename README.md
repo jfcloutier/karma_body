@@ -1,5 +1,9 @@
 # KarmaBody
 
+**UNDER CONSTRUCTION**
+
+## About
+
 A Web app to access the actuators and sensors of a Lego robot's body, real or simulated.
 
 KarmaBody is responsible...
