@@ -1,6 +1,6 @@
 defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
   @moduledoc """
-  A tacho motor
+  A tacho motor of any size.
   """
 
   alias KarmaBody.Platform.Brickpi3.LegoDevice
@@ -19,16 +19,26 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
         domain: ~w(running ramping holding overloaded)
       }),
       LegoDevice.to_exposed_device(tacho_motor, %{
-        sense: "speed",
-        domain: %{from: 0, to: max_rpm(tacho_motor)}
-      }),
-      LegoDevice.to_exposed_device(tacho_motor, %{
         sense: "position",
         domain: %{from: -2_147_483_648, to: 2_147_483_647}
       })
     ]
 
   @impl LegoDevice
+  @spec to_exposed_actuators(KarmaBody.Platform.Brickpi3.LegoDevice.t()) :: [
+          %{
+            capabilities: %{
+              optional(:action) => binary(),
+              optional(:domain) => :percent | list() | map(),
+              optional(:sense) => binary()
+            },
+            class: :motor | :sensor,
+            id: nonempty_binary(),
+            type: :gyro | :infrared | :light | :tacho_motor | :touch | :ultrasonic,
+            url: <<_::24, _::_*8>>
+          },
+          ...
+        ]
   def to_exposed_actuators(tacho_motor),
     do: [
       LegoDevice.to_exposed_device(tacho_motor, %{
@@ -95,22 +105,10 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
   def sense(tacho_motor, "position"),
     do: LegoDevice.get_attribute(tacho_motor, "position", :integer)
 
-  def sense(tacho_motor, "speed") do
-    speed = LegoDevice.get_attribute(tacho_motor, "speed", :integer)
-    speed_to_rpm(speed, tacho_motor.properties[:count_per_rot])
-  end
-
-  defp max_rpm(tacho_motor) do
-    # in tacho counts
-    max_speed = tacho_motor.properties[:max_speed]
-    count_per_rot = tacho_motor.properties[:count_per_rot]
-    speed_to_rpm(max_speed, count_per_rot)
-  end
-
   # count_per_rot - The number of tacho counts in one rotation of the motor.
   # speed - tacho counts per sec
   # rpm - 60 * speed / count_per_rot
-  defp speed_to_rpm(speed, count_per_rot), do: round(60 * speed / count_per_rot)
-
   defp rpm_to_speed(rpm, count_per_rot), do: round(rpm * count_per_rot / 60)
+
+  # defp speed_to_rpm(speed, count_per_rot), do: round(60 * speed / count_per_rot)
 end
