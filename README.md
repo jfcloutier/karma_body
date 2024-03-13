@@ -174,16 +174,39 @@ The information is provided in `~/karma_body/config.exs`. Edit the `brickpi3` se
 For example:
 
 ``` elixir
-config :karma_body,
-  brickpi3: [
-    [port: :in1, sensor: :touch]
-    [port: :in2, sensor: :light],
-    [port: :in3, sensor: :infrared],
-    [port: :in4, sensor: :ultrasonic],
-    [port: :outA, motor: :tacho_motor],
-    [port: :outB, motor: :tacho_motor]
-  ]
+config :karma_body, :brickpi3,
+  devices: [
+    [port: :in1, sensor: :touch, position: :front, orientation: :forward],
+    # [port: :in1, sensor: :gyro],
+    [port: :in2, sensor: :light, position: :front, orientation: :downward],
+    # The infrared sensor senses channels 1 and 2 of the IR beacon
+    [port: :in3, sensor: :infrared, channels: [1, 2], position: :front, orientation: :forward],
+    [port: :in4, sensor: :ultrasonic, position: :front, orientation: :forward],
+    [
+      port: :outA,
+      motor: :tacho_motor,
+      polarity: "normal",
+      rpm: 60,
+      burst_secs: 1,
+      position: :left,
+      orientation: :forward
+    ],
+    [
+      port: :outB,
+      motor: :tacho_motor,
+      polarity: "normal",
+      rpm: 60,
+      burst_secs: 1,
+      position: :right,
+      orientation: :forward
+    ]
+    # [port: :outC, motor: :tacho_motor, polarity: "normal", rpm: 120, burst_secs: 5,position: :front, orientation: :downward]
+  ],
+  # If the brickpi3 is simulated, where to forward
+  simulation: [host: "http://localhost:4001"]
 ```
+
+The `position` and `orientation` properties are meaningful only when running in siumlation mode.
 
 See `~/karma_body/lib/karma_body.ex` for the names of all supported devices, and `~/karma_body/lib/karma_body/platform/brickpi3.ex` for the list of all ports.
 
@@ -211,3 +234,10 @@ $ wget -q -O - http://192.168.50.242:4000/api/sense/touch_in1/contact
 
 {"sensor":"touch_in1","sense":"contact","value":"released"}
 ```
+
+## Simulation mode
+
+If the body is not running on an ev3dev system (with a BrickPi3 board), then the Brickpi3 platform is considered to be simulated.
+
+When running in simulation mode, registering devices, sensing and actuating are dispatched to a simulation web app; no attempt is made to access the
+file system where ev3dev drivers would otherwise expose sensor and motor devices.

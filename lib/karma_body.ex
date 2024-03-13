@@ -8,9 +8,9 @@ defmodule KarmaBody do
   @type host_url :: String.t()
 
   @typedoc """
-  Device type from any of the supported platforms. Currently only Lego device types.
+  Device type from any of the supported platforms.
   """
-  @type device_type :: KarmaBody.Platform.Brickpi3.LegoDevice.device_type()
+  @type device_type :: atom()
 
   @type device_class :: :sensor | :motor
 

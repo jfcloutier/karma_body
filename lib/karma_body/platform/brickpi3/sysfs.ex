@@ -21,6 +21,12 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
   @mode_switch_delay 100
 
   @doc """
+  Whether the lego devices directory exists
+  """
+  @spec exists?() :: boolean()
+  def exists?(), do: File.exists?(@ports_path)
+
+  @doc """
   Associate the port with a device mode
   """
   @spec register_device(KarmaBody.device_class(), port_name(), LegoDevice.device_type()) ::

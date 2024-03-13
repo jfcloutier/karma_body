@@ -34,18 +34,36 @@ config :phoenix, :json_library, Jason
 config :karma_body,
   platform: :brickpi3
 
-config :karma_body,
-  brickpi3: [
-    [port: :in1, sensor: :touch],
+config :karma_body, :brickpi3,
+  devices: [
+    [port: :in1, sensor: :touch, position: :front, orientation: :forward],
     # [port: :in1, sensor: :gyro],
-    [port: :in2, sensor: :light],
+    [port: :in2, sensor: :light, position: :front, orientation: :downward],
     # The infrared sensor senses channels 1 and 2 of the IR beacon
-    [port: :in3, sensor: :infrared, channels: [1, 2]],
-    [port: :in4, sensor: :ultrasonic],
-    [port: :outA, motor: :tacho_motor, polarity: "normal", rpm: 60, burst_secs: 1],
-    [port: :outB, motor: :tacho_motor, polarity: "normal", rpm: 60, burst_secs: 1],
-    [port: :outC, motor: :tacho_motor, polarity: "normal", rpm: 120, burst_secs: 5]
-  ]
+    [port: :in3, sensor: :infrared, channels: [1, 2], position: :front, orientation: :forward],
+    [port: :in4, sensor: :ultrasonic, position: :front, orientation: :forward],
+    [
+      port: :outA,
+      motor: :tacho_motor,
+      polarity: "normal",
+      rpm: 60,
+      burst_secs: 1,
+      position: :left,
+      orientation: :forward
+    ],
+    [
+      port: :outB,
+      motor: :tacho_motor,
+      polarity: "normal",
+      rpm: 60,
+      burst_secs: 1,
+      position: :right,
+      orientation: :forward
+    ]
+    # [port: :outC, motor: :tacho_motor, polarity: "normal", rpm: 120, burst_secs: 5,position: :front, orientation: :downward]
+  ],
+  # If the brickpi3 is simulated, where to forward
+  simulation: [host: "http://localhost:4001"]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

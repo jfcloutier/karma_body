@@ -5,7 +5,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
   It registers devices, identifies them from dispatched calls by their ids and disaptches to them.
   """
 
-  alias KarmaBody.Platform.Brickpi3.{LegoDevice, Sysfs}
+  alias KarmaBody.Platform.Brickpi3.{LegoDevice, Simulation, Sysfs}
   alias KarmaBody.Platform
 
   use GenServer
@@ -54,12 +54,16 @@ defmodule KarmaBody.Platform.Brickpi3 do
 
   @impl Platform
   def sense(device_id, sense) do
-    GenServer.call(__MODULE__, {:sense, device_id, sense})
+    if simulated?(),
+      do: Simulation.sense(device_id, sense),
+      else: GenServer.call(__MODULE__, {:sense, device_id, sense})
   end
 
   @impl Platform
   def actuate(device_id, action) do
-    GenServer.cast(__MODULE__, {:actuate, device_id, action})
+    if simulated?(),
+      do: Simulation.actuate(device_id, action),
+      else: GenServer.cast(__MODULE__, {:actuate, device_id, action})
   end
 
   @impl GenServer
@@ -98,7 +102,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
   defp initialize_devices() do
     Logger.debug("[KarmaBody] Brickpi3 - Initialing devices on the BrickPi3...")
 
-    Application.get_env(:karma_body, :brickpi3)
+    Application.get_env(:karma_body, :brickpi3)[:devices]
     |> Enum.reduce({[], []}, fn port_config, {sensors_acc, motors_acc} ->
       cond do
         Keyword.has_key?(port_config, :sensor) ->
@@ -133,7 +137,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
       "[KarmaBody] Brickpi3 - Initializing #{inspect(device_type)} #{device_class} on port #{inspect(port)} with properties #{inspect(properties)}}"
     )
 
-    {port_path, attribute_path} = Sysfs.register_device(device_class, port, device_type)
+    {port_path, attribute_path} = register_device(device_class, port, device_type, properties)
 
     LegoDevice.make(
       class: device_class,
@@ -144,6 +148,14 @@ defmodule KarmaBody.Platform.Brickpi3 do
       properties: properties
     )
   end
+
+  defp register_device(device_class, port, device_type, properties) do
+    if simulated?(),
+      do: Simulation.register_device(device_class, port, device_type, properties),
+      else: Sysfs.register_device(device_class, port, device_type)
+  end
+
+  defp simulated?(), do: not Sysfs.exists?()
 
   defp to_exposed_sensors(lego_device), do: lego_device.module.to_exposed_sensors(lego_device)
   defp to_exposed_actuators(lego_device), do: lego_device.module.to_exposed_actuators(lego_device)
