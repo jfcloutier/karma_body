@@ -50,7 +50,6 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
     ]
 
   @impl LegoDevice
-  # TODO
   def initialize_platform(tacho_motor) do
     LegoDevice.set_attribute(tacho_motor, "polarity", tacho_motor.properties[:polarity])
     max_speed = tacho_motor.properties[:max_speed]
@@ -68,8 +67,14 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
 
   @impl LegoDevice
   def set_constants(tacho_motor) do
-    max_speed = LegoDevice.get_attribute(tacho_motor, "max_speed", :integer)
-    count_per_rot = LegoDevice.get_attribute(tacho_motor, "count_per_rot", :integer)
+    {max_speed, count_per_rot} =
+      if LegoDevice.simulated?() do
+        # TODO
+        {100, 100}
+      else
+        {LegoDevice.get_attribute(tacho_motor, "max_speed", :integer),
+         LegoDevice.get_attribute(tacho_motor, "count_per_rot", :integer)}
+      end
 
     %{
       tacho_motor

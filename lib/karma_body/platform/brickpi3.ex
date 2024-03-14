@@ -53,6 +53,9 @@ defmodule KarmaBody.Platform.Brickpi3 do
   end
 
   @impl Platform
+  def simulated?(), do: not Sysfs.exists?()
+
+  @impl Platform
   def sense(device_id, sense) do
     if simulated?(),
       do: Simulation.sense(device_id, sense),
@@ -154,8 +157,6 @@ defmodule KarmaBody.Platform.Brickpi3 do
       do: Simulation.register_device(device_class, port, device_type, properties),
       else: Sysfs.register_device(device_class, port, device_type)
   end
-
-  defp simulated?(), do: not Sysfs.exists?()
 
   defp to_exposed_sensors(lego_device), do: lego_device.module.to_exposed_sensors(lego_device)
   defp to_exposed_actuators(lego_device), do: lego_device.module.to_exposed_actuators(lego_device)

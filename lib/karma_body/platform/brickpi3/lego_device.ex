@@ -85,7 +85,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
     }
 
     lego_device = device_module.set_constants(lego_device)
-    device_module.initialize_platform(lego_device)
+    if not simulated?(), do: device_module.initialize_platform(lego_device)
 
     Logger.debug(
       "[KarmaBody] LegoDevice - Made and initialized LegoDevice #{inspect(lego_device)}"
@@ -93,6 +93,12 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
 
     lego_device
   end
+
+  @doc """
+  Whether the Lego device is being simulated.
+  """
+  @spec simulated?() :: boolean()
+  def simulated?(), do: Brickpi3.simulated?()
 
   @doc """
   Convert a lego device to a exposed (platform-independent) device.

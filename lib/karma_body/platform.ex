@@ -18,6 +18,11 @@ defmodule KarmaBody.Platform do
         }
 
   @doc """
+  Whether running in simulation
+  """
+  @callback simulated?() :: boolean()
+
+  @doc """
   Make an identifier for the device unique to its platform
   """
   @callback device_id(device()) :: device_id()

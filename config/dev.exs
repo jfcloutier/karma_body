@@ -16,7 +16,7 @@ ip_address =
     else
       nil
     end
-  end)
+  end) || {127, 0, 0, 1}
 
 config :karma_body, KarmaBodyWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
