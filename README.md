@@ -1,10 +1,8 @@
 # KarmaBody
 
-**UNDER CONSTRUCTION**
-
 ## About
 
-A Web app to access the actuators and sensors of a Lego robot's body, real or simulated.
+A Web app to access the actuators and sensors of a robot's body, real or simulated.
 
 KarmaBody is responsible...
 
@@ -12,7 +10,11 @@ KarmaBody is responsible...
 * For providing, via HTTP, the list of sensors or motors, together with what they are* capable of and how to reach them
 * For answering HTTP requests to sense and to act
 
-## Getting started
+Multiple platforms can be supported.
+
+At the moment, only the EV3Dev-BrickPi3 platform is implemented (Lego EV3 devices connected to a BrickPi3 board on a Raspberry Pi3).
+
+## Getting started with the EV3Dev-BrickPi3 platform
 
 Get yourself a Raspberry Pi3 and a [BrickPi3](https://www.dexterindustries.com/store/brickpi3-starter-kit/.)
 
@@ -255,3 +257,9 @@ config :karma_body, :brickpi3,
 ```
 
 The REST API of the simulation web app must conform to `KarmaBody.Simulation`.
+
+## Implementing other platforms
+
+Alternate platforms can be added to the Body by implementing the `KarmaBody.Platform` behavior and by registering it in `config/config.exs`.
+
+See `KarmaBody.Platform.Brickpi3` as an example.
