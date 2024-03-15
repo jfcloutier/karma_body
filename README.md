@@ -237,7 +237,21 @@ $ wget -q -O - http://192.168.50.242:4000/api/sense/touch_in1/contact
 
 ## Simulation mode
 
-If the body is not running on an ev3dev system (with a BrickPi3 board), then the Brickpi3 platform is considered to be simulated.
+If the body is not running on an ev3dev system (with a BrickPi3 board), then the Brickpi3 platform is simulated.
 
-When running in simulation mode, registering devices, sensing and actuating are dispatched to a simulation web app; no attempt is made to access the
+When running in simulation mode, registering devices, sensing and actuating are dispatched to a simulation web app instead of accessing the
 file system where ev3dev drivers would otherwise expose sensor and motor devices.
+
+The host of the simulation web app for the implemented platform, here `:brickpi3`, is identified in `config/config.exs`:
+
+```elixir
+config :karma_body, :brickpi3,
+  devices: [
+   # ...
+  ],
+  # If the birckpi3 platform is simulated, where to forward device registration, sensing and actuating
+  simulation: [host: "http://localhost:4001"]
+
+```
+
+The REST API of the simulation web app must conform to `KarmaBody.Simulation`.
