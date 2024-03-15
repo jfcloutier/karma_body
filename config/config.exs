@@ -62,7 +62,7 @@ config :karma_body, :brickpi3,
     ]
     # [port: :outC, motor: :tacho_motor, polarity: "normal", rpm: 120, burst_secs: 5,position: :front, orientation: :downward]
   ],
-  # If the brickpi3 is simulated, where to forward
+  # If the birckpi3 platform is simulated, where to forward device registration, sensing and actuating
   simulation: [host: "http://localhost:4001"]
 
 # Import environment specific config. This must remain at the bottom

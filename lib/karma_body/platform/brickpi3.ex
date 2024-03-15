@@ -5,8 +5,8 @@ defmodule KarmaBody.Platform.Brickpi3 do
   It registers devices, identifies them from dispatched calls by their ids and disaptches to them.
   """
 
-  alias KarmaBody.Platform.Brickpi3.{LegoDevice, Simulation, Sysfs}
-  alias KarmaBody.Platform
+  alias KarmaBody.Platform.Brickpi3.{LegoDevice, Sysfs}
+  alias KarmaBody.{Platform, Simulation}
 
   use GenServer
 
@@ -153,9 +153,13 @@ defmodule KarmaBody.Platform.Brickpi3 do
   end
 
   defp register_device(device_class, port, device_type, properties) do
-    if simulated?(),
-      do: Simulation.register_device(device_class, port, device_type, properties),
-      else: Sysfs.register_device(device_class, port, device_type)
+    if simulated?() do
+      _ = Simulation.register_device(device_class, port, device_type, properties)
+      # Return empty port and attribute paths since they are ignored under simulation
+      {"", ""}
+    else
+      Sysfs.register_device(device_class, port, device_type)
+    end
   end
 
   defp to_exposed_sensors(lego_device), do: lego_device.module.to_exposed_sensors(lego_device)

@@ -24,7 +24,7 @@ defmodule KarmaBody.BodySupervisor do
   defp detect_platform_module() do
     case KarmaBody.platform() do
       :brickpi3 -> KarmaBody.Platform.Brickpi3
-      # simulation platform goes here
+      # Other platforms go here
       other -> raise "Unknown platform module #{inspect(other)}"
     end
   end

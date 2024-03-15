@@ -14,6 +14,8 @@ defmodule KarmaBody do
 
   @type device_class :: :sensor | :motor
 
+  @type device_properties :: keyword()
+
   @type sensed_value :: String.t() | integer() | :unknown
 
   @spec actuators() :: [Platform.exposed_device()]
