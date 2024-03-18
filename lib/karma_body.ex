@@ -33,7 +33,7 @@ defmodule KarmaBody do
   @doc """
   Request an action from a device.
   """
-  @spec actuate(id: String.t(), action: String.t()) :: :ok
+  @spec actuate(id: String.t(), action: String.t()) :: :ok | {:error, :failed}
   def actuate(id: device_id, action: action),
     do: platform_module().actuate(device_id, action)
 

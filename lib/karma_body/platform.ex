@@ -49,5 +49,5 @@ defmodule KarmaBody.Platform do
   @doc """
   Request an actuation.
   """
-  @callback actuate(device_id(), action()) :: :ok
+  @callback actuate(device_id(), action()) :: :ok | {:error, :failed}
 end

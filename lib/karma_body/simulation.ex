@@ -35,10 +35,12 @@ defmodule KarmaBody.Simulation do
              device_type: device_type,
              connection: connection,
              properties: properties_map
-           })
+           }),
+           [{"content-type", "application/json"}]
          ) do
       {:ok, response} ->
-        response.body
+        answer = Jason.decode!(response.body)
+        answer[:registered]
 
       other ->
         Logger.warning("[KarmaBody] Simulation - Regostering got unexpected #{inspect(other)}")
@@ -52,9 +54,12 @@ defmodule KarmaBody.Simulation do
   def sense(device_id, sense) do
     Logger.info("[KarmaBody] Simulation - #{inspect(device_id)} sense #{inspect(sense)}")
 
-    case HTTPoison.get(simulation_url("sense/#{device_id}/#{sense}")) do
+    case HTTPoison.get(simulation_url("sense/#{device_id}/#{sense}"),
+           [{"content-type", "application/json"}]
+         ) do
       {:ok, response} ->
-        response.body
+        answer = Jason.decode!(response.body)
+        answer[:value]
 
       other ->
         Logger.warning("[KarmaBody] Simulation - Sensing got unexpected #{inspect(other)}")
@@ -65,14 +70,20 @@ defmodule KarmaBody.Simulation do
   @doc """
   Simulate actuating a device.
   """
-  @spec actuate(Platform.device_id(), Platform.sense()) :: :ok
+  @spec actuate(Platform.device_id(), Platform.sense()) :: :ok | {:error, :failed}
   def actuate(device_id, action) do
     Logger.info("[KarmaBody] Simulation - #{inspect(device_id)} actuate #{inspect(action)}")
 
-    response = HTTPoison.get(simulation_url("actuate/#{device_id}/#{action}"))
+    case HTTPoison.get(simulation_url("actuate/#{device_id}/#{action}"),
+           [{"content-type", "application/json"}]
+         ) do
+      {:ok, _response} ->
+        :ok
 
-    Logger.info("[KarmaBody] Simulation - Actuating got #{inspect(response)}")
-    :ok
+      other ->
+        Logger.info("[KarmaBody] Simulation - Actuating got unexpected #{inspect(other)}")
+        {:error, :failed}
+    end
   end
 
   defp simulation_url(act) do
