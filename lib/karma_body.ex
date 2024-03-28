@@ -18,6 +18,12 @@ defmodule KarmaBody do
 
   @type sensed_value :: String.t() | integer() | :unknown
 
+  @doc """
+  The body's name. Used when simulated.
+  """
+  @spec name() :: String.t()
+  def name(), do: Application.get_env(:karma_body, :name)
+
   @spec actuators() :: [Platform.exposed_device()]
   def actuators(), do: platform_module().exposed_actuators()
 

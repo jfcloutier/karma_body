@@ -28,6 +28,10 @@ defmodule KarmaBody.Platform.Brickpi3 do
   @impl GenServer
   @spec init(any()) :: {:ok, KarmaBody.Platform.Brickpi3.t()}
   def init(_opts) do
+    if simulated?() do
+      Simulation.register_body()
+    end
+
     {lego_sensors, lego_motors} = initialize_devices()
 
     {:ok, %__MODULE__{lego_motors: lego_motors, lego_sensors: lego_sensors}}
@@ -154,7 +158,14 @@ defmodule KarmaBody.Platform.Brickpi3 do
 
   defp register_device(device_class, port, device_type, properties) do
     if simulated?() do
-      _ = Simulation.register_device(device_class, port, device_type, properties)
+      _ =
+        Simulation.register_device(
+          device_id(%{type: device_type, port: port}),
+          device_class,
+          device_type,
+          properties
+        )
+
       # Return empty port and attribute paths since they are ignored under simulation
       {"", ""}
     else

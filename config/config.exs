@@ -29,27 +29,35 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-# Rover configuration
-
 config :karma_body,
-  platform: :brickpi3
+  platform: :brickpi3,
+  name: "karl"
 
+# Rover configuration
 config :karma_body, :brickpi3,
   devices: [
-    [port: :in1, sensor: :touch, position: :front, orientation: :forward],
+    [port: :in1, sensor: :touch, position: :front, aim: :forward],
     # [port: :in1, sensor: :gyro],
-    [port: :in2, sensor: :light, position: :front, orientation: :downward],
+    [port: :in2, sensor: :light, position: :front, aim: :downward],
     # The infrared sensor senses channels 1 and 2 of the IR beacon
-    [port: :in3, sensor: :infrared, channels: [1, 2], position: :front, orientation: :forward],
-    [port: :in4, sensor: :ultrasonic, position: :front, orientation: :forward],
+    [
+      port: :in3,
+      sensor: :infrared,
+      channels: [1, 2],
+      position: :front,
+      aim: :forward,
+      height_cm: 10
+    ],
+    [port: :in4, sensor: :ultrasonic, position: :front, aim: :forward, height_cm: 10],
+    # speed_mode (:rps or :dps), speed (rotation per sec  or degrees per second) and time (run duration in secs)
+    # %{time: 0, speed_mode: :rps, speed: 0}
     [
       port: :outA,
       motor: :tacho_motor,
       polarity: "normal",
       rpm: 60,
       burst_secs: 1,
-      position: :left,
-      orientation: :forward
+      position: :left
     ],
     [
       port: :outB,
@@ -57,8 +65,7 @@ config :karma_body, :brickpi3,
       polarity: "normal",
       rpm: 60,
       burst_secs: 1,
-      position: :right,
-      orientation: :forward
+      position: :right
     ]
     # [port: :outC, motor: :tacho_motor, polarity: "normal", rpm: 120, burst_secs: 5,position: :front, orientation: :downward]
   ],

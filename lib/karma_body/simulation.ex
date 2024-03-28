@@ -1,6 +1,6 @@
 defmodule KarmaBody.Simulation do
   @moduledoc """
-  Portal to the simulation of any platform.
+  Portal to the simulation of a platform.
   """
 
   alias KarmaBody.Platform
@@ -13,27 +13,52 @@ defmodule KarmaBody.Simulation do
   @type registration_receipt :: any()
 
   @doc """
+  Register the agent's body in the simulation
+  """
+  @spec register_body() :: :ok | {:error, HTTPoison.Error.t()}
+  def register_body() do
+    body_name = KarmaBody.name()
+    Logger.info("[KarmaBody] Simulation - Registering body #{body_name}}")
+
+    case HTTPoison.put(
+           simulation_url("register_body/#{body_name}"),
+           "",
+           [{"content-type", "application/json"}]
+         ) do
+      {:ok, _response} ->
+        :ok
+
+      {:error, error} ->
+        Logger.warning("[KarmaBody] Simulation - Registering body got error #{inspect(error)}")
+        {:error, error}
+    end
+  end
+
+  @doc """
   Register a device with its simulation.
   """
   @spec register_device(
+          KarmaBody.Platform.device_id(),
           KarmaBody.device_class(),
           KarmaBody.device_type(),
-          device_connection(),
           KarmaBody.device_properties()
         ) :: registration_receipt()
-  def register_device(device_class, connection, device_type, properties) do
+  def register_device(device_id, device_class, device_type, properties) do
+    body_name = KarmaBody.name()
+
     Logger.info(
-      "[KarmaBody] Simulation - Registering #{device_class}} #{device_type} on #{connection} with properties #{inspect(properties)}"
+      "[KarmaBody] Simulation - Registering #{body_name}'s #{device_class} #{device_type} as #{device_id} with properties #{inspect(properties)}"
     )
 
     properties_map = Enum.into(properties, %{})
 
     case HTTPoison.post(
-           simulation_url("register_device"),
+           simulation_url("register_device/#{body_name}"),
            Jason.encode!(%{
+             body_name: KarmaBody.name(),
+             device_id: device_id,
              device_class: device_class,
              device_type: device_type,
-             connection: connection,
              properties: properties_map
            }),
            [{"content-type", "application/json"}]
@@ -43,7 +68,9 @@ defmodule KarmaBody.Simulation do
         answer[:registered]
 
       other ->
-        Logger.warning("[KarmaBody] Simulation - Regostering got unexpected #{inspect(other)}")
+        Logger.warning(
+          "[KarmaBody] Simulation - Registering device got unexpected #{inspect(other)}"
+        )
     end
   end
 
@@ -54,7 +81,8 @@ defmodule KarmaBody.Simulation do
   def sense(device_id, sense) do
     Logger.info("[KarmaBody] Simulation - #{inspect(device_id)} sense #{inspect(sense)}")
 
-    case HTTPoison.get(simulation_url("sense/#{device_id}/#{sense}"),
+    case HTTPoison.get(
+           simulation_url("sense/#{device_id}/#{sense}"),
            [{"content-type", "application/json"}]
          ) do
       {:ok, response} ->
@@ -70,11 +98,12 @@ defmodule KarmaBody.Simulation do
   @doc """
   Simulate actuating a device.
   """
-  @spec actuate(Platform.device_id(), Platform.sense()) :: :ok | {:error, :failed}
+  @spec actuate(Platform.device_id(), Platform.action()) :: :ok | {:error, :failed}
   def actuate(device_id, action) do
     Logger.info("[KarmaBody] Simulation - #{inspect(device_id)} actuate #{inspect(action)}")
 
-    case HTTPoison.get(simulation_url("actuate/#{device_id}/#{action}"),
+    case HTTPoison.get(
+           simulation_url("actuate/#{device_id}/#{action}"),
            [{"content-type", "application/json"}]
          ) do
       {:ok, _response} ->
