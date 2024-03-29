@@ -81,16 +81,24 @@ defmodule KarmaBody.Simulation do
   def sense(device_id, sense) do
     Logger.info("[KarmaBody] Simulation - #{inspect(device_id)} sense #{inspect(sense)}")
 
+    body_name = KarmaBody.name()
+
+    url = simulation_url("sense/body/#{body_name}/device/#{device_id}/sense/#{sense}")
+
     case HTTPoison.get(
-           simulation_url("sense/#{device_id}/#{sense}"),
+           url,
            [{"content-type", "application/json"}]
          ) do
       {:ok, response} ->
+        Logger.info("[KarmaBody] Simulation - Got #{inspect(response)} from #{inspect(url)}")
         answer = Jason.decode!(response.body)
-        answer[:value]
+        Map.get(answer, "value")
 
       other ->
-        Logger.warning("[KarmaBody] Simulation - Sensing got unexpected #{inspect(other)}")
+        Logger.warning(
+          "[KarmaBody] Simulation - Sensing got unexpected #{inspect(other)} from #{inspect(url)}"
+        )
+
         :unknown
     end
   end
