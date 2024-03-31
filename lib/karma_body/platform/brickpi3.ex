@@ -109,7 +109,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
         updated_motor
       )
 
-    {:noreply, %{state | motors: updated_motors}}
+    {:noreply, %{state | lego_motors: updated_motors}}
   end
 
   # Aggregate a list of actions ("spin", "reverse_spin") for each motor and then execute concurrently
