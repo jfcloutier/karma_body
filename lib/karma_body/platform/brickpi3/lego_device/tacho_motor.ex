@@ -85,18 +85,23 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
   end
 
   @impl KarmaBody.Actuator
-  def execute(tacho_motor, %{polarity: polarity, bursts: bursts}) do
+  def execute(tacho_motor, %{polarity: polarity, bursts: bursts} = execution) do
+    Logger.warning("EXECUTING #{inspect(execution)} on motor #{inspect(tacho_motor.attribute_path)}")
     burst_secs = tacho_motor.properties[:burst_secs]
-    actual_polarity = case tacho_motor.properties[:polarity] do
-      "normal" -> polarity
-      "inversed" -> invert_polarity(polarity)
-    end
+
+    actual_polarity =
+      case tacho_motor.properties[:polarity] do
+        "normal" -> polarity
+        "inversed" -> invert_polarity(polarity)
+      end
+
     LegoDevice.set_attribute(tacho_motor, "polarity", actual_polarity)
     # time_sp is in milliseconds
     duration_ms = burst_secs * bursts * 1_000
     LegoDevice.set_attribute(tacho_motor, "time_sp", duration_ms)
     LegoDevice.set_attribute(tacho_motor, "command", "run-timed")
     Process.sleep(duration_ms)
+    LegoDevice.set_attribute(tacho_motor, "time_sp", 0)
   end
 
   @impl KarmaBody.Sensor

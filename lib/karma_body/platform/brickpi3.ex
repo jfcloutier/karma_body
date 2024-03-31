@@ -212,7 +212,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
     reverse_spin_count = Enum.count(motor.actions, &(&1 == "reverse_spin"))
     bursts = spin_count - reverse_spin_count
     polarity = if bursts >= 0, do: "normal", else: "inversed"
-    %{polarity: polarity, bursts: bursts}
+    %{polarity: polarity, bursts: abs(bursts)}
   end
 
   defp to_exposed_sensors(lego_device), do: lego_device.module.to_exposed_sensors(lego_device)
