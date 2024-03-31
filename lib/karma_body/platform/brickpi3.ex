@@ -105,7 +105,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
     updated_motors =
       List.replace_at(
         state.lego_motors,
-        Enum.find_index(state.lego_motors, &(&1.device_id == device_id)),
+        Enum.find_index(state.lego_motors, &(&1.attribute_path == lego_device.attribute_path)),
         updated_motor
       )
 
