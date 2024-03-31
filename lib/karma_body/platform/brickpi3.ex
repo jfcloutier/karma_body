@@ -134,8 +134,8 @@ defmodule KarmaBody.Platform.Brickpi3 do
 
   defp find_device(devices, device_id) do
     [type_s, port_s] = String.split(device_id, "-")
-    type = String.to_existing_atom(type_s)
-    port = String.to_existing_atom(port_s)
+    type = String.to_atom(type_s)
+    port = String.to_atom(port_s)
     Enum.find(devices, &(&1.type == type and &1.port == port))
   end
 
