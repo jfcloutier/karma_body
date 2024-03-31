@@ -77,6 +77,7 @@ defmodule KarmaBody.Platform.Brickpi3.Sysfs do
 
   @doc "Get the typed value of an attribute of the device"
   def get_attribute(path, attribute, type) do
+    Logger.warning("READ_SYS #{inspect(path)} #{inspect(attribute)}")
     value = read_sys(path, attribute)
 
     case type do
