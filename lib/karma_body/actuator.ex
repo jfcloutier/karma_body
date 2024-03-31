@@ -6,7 +6,7 @@ defmodule KarmaBody.Actuator do
   alias KarmaBody.Platform
 
   @doc """
-  Ask a device to actuate.
+  Ask a device to execute its actuation.
   """
-  @callback actuate(Platform.device(), Platform.action()) :: :ok
+  @callback execute(Platform.device(), map()) :: :ok
 end

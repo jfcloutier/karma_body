@@ -5,7 +5,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
   It registers devices, identifies them from dispatched calls by their ids and disaptches to them.
   """
 
-  alias KarmaBody.Platform.Brickpi3.{LegoDevice, Sysfs}
+  alias KarmaBody.Platform.Brickpi3.{LegoDevice, LegoDevice.TachoMotor, Sysfs}
   alias KarmaBody.{Platform, Simulation}
 
   use GenServer
@@ -29,7 +29,7 @@ defmodule KarmaBody.Platform.Brickpi3 do
   @spec init(any()) :: {:ok, KarmaBody.Platform.Brickpi3.t()}
   def init(_opts) do
     if simulated?() do
-      Simulation.register_body()
+      :ok = Simulation.register_body()
     end
 
     {lego_sensors, lego_motors} = initialize_devices()
@@ -73,6 +73,13 @@ defmodule KarmaBody.Platform.Brickpi3 do
       else: GenServer.cast(__MODULE__, {:actuate, device_id, action})
   end
 
+  @impl Platform
+  def execute_actions() do
+    if simulated?(),
+      do: Simulation.execute_actions(),
+      else: GenServer.cast(__MODULE__, :execute_actions)
+  end
+
   @impl GenServer
   def handle_call(:exposed_sensors, _from, state) do
     sensors = state.lego_sensors |> Enum.map(&to_exposed_sensors/1)
@@ -93,8 +100,34 @@ defmodule KarmaBody.Platform.Brickpi3 do
   @impl GenServer
   def handle_cast({:actuate, device_id, action}, state) do
     lego_device = find_device(state.lego_motors, device_id)
-    lego_device.module().actuate(lego_device, action)
-    {:noreply, state}
+    updated_motor = %{lego_device | actions: lego_device.actions ++ [action]}
+
+    updated_motors =
+      List.replace_at(
+        state.lego_motors,
+        Enum.find_index(state.lego_motors, &(&1.device_id == device_id)),
+        updated_motor
+      )
+
+    {:noreply, %{state | motors: updated_motors}}
+  end
+
+  # Aggregate a list of actions ("spin", "reverse_spin") for each motor and then execute concurrently
+  def handle_cast(:execute_actions, state) do
+    state.lego_motors
+    |> Enum.reduce([], fn motor, acc ->
+      [{motor, aggregate_actions(motor)} | acc]
+    end)
+    |> Enum.into(%{})
+    |> Enum.map(fn {motor, execution} ->
+      Task.async(fn -> TachoMotor.execute(motor, execution) end)
+    end)
+    |> Enum.each(&Task.await/1)
+
+    updated_motors =
+      Enum.map(state.lego_motors, &%{&1 | actions: []})
+
+    {:noreply, %{state | lego_motors: updated_motors}}
   end
 
   ###
@@ -171,6 +204,15 @@ defmodule KarmaBody.Platform.Brickpi3 do
     else
       Sysfs.register_device(device_class, port, device_type)
     end
+  end
+
+  # Aggregate spin and reverse_spin actions into %{polarity: polarity, bursts: bursts}
+  defp aggregate_actions(motor) do
+    spin_count = Enum.count(motor.actions, &(&1 == "spin"))
+    reverse_spin_count = Enum.count(motor.actions, &(&1 == "reverse_spin"))
+    bursts = spin_count - reverse_spin_count
+    polarity = if bursts >= 0, do: "normal", else: "inversed"
+    %{polarity: polarity, bursts: bursts}
   end
 
   defp to_exposed_sensors(lego_device), do: lego_device.module.to_exposed_sensors(lego_device)

@@ -34,7 +34,9 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
           # Path to where the device attribute values can be written and read
           attribute_path: String.t(),
           # device options and constants
-          properties: keyword()
+          properties: keyword(),
+          # Accumulated action waiting to be executed
+          actions: [atom()]
         }
 
   @type operating_mode() :: String.t()
@@ -45,7 +47,8 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
             port: nil,
             port_path: nil,
             attribute_path: nil,
-            properties: []
+            properties: [],
+            actions: []
 
   @doc """
   Convert a lego device into one or more exposed sensor devices.

@@ -58,11 +58,9 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
       rpm_to_speed(tacho_motor.properties[:rpm], tacho_motor.properties[:count_per_rot])
       |> min(max_speed)
 
-    burst_secs = tacho_motor.properties[:burst_secs]
     LegoDevice.set_attribute(tacho_motor, "speed_sp", speed_sp)
     LegoDevice.set_attribute(tacho_motor, "duty_cycle_sp", 100)
     LegoDevice.set_attribute(tacho_motor, "stop_action", "coast")
-    LegoDevice.set_attribute(tacho_motor, "time_sp", burst_secs * 1_000)
   end
 
   @impl LegoDevice
@@ -87,21 +85,18 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
   end
 
   @impl KarmaBody.Actuator
-  def actuate(tacho_motor, "spin") do
-    polarity = tacho_motor.properties[:polarity]
-    LegoDevice.set_attribute(tacho_motor, "polarity", polarity)
+  def execute(tacho_motor, %{polarity: polarity, bursts: bursts}) do
+    burst_secs = tacho_motor.properties[:burst_secs]
+    actual_polarity = case tacho_motor.properties[:polarity] do
+      "normal" -> polarity
+      "inversed" -> invert_polarity(polarity)
+    end
+    LegoDevice.set_attribute(tacho_motor, "polarity", actual_polarity)
+    # time_sp is in milliseconds
+    duration_ms = burst_secs * bursts * 1_000
+    LegoDevice.set_attribute(tacho_motor, "time_sp", duration_ms)
     LegoDevice.set_attribute(tacho_motor, "command", "run-timed")
-  end
-
-  def actuate(tacho_motor, "reverse_spin") do
-    polarity =
-      case tacho_motor.properties[:polarity] do
-        "normal" -> "inversed"
-        "inversed" -> "normal"
-      end
-
-    LegoDevice.set_attribute(tacho_motor, "polarity", polarity)
-    LegoDevice.set_attribute(tacho_motor, "command", "run-timed")
+    Process.sleep(duration_ms)
   end
 
   @impl KarmaBody.Sensor
@@ -116,4 +111,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
   defp rpm_to_speed(rpm, count_per_rot), do: round(rpm * count_per_rot / 60)
 
   # defp speed_to_rpm(speed, count_per_rot), do: round(60 * speed / count_per_rot)
+
+  defp invert_polarity("normal"), do: "inversed"
+  defp invert_polarity("inversed"), do: "normal"
 end

@@ -109,9 +109,10 @@ defmodule KarmaBody.Simulation do
   @spec actuate(Platform.device_id(), Platform.action()) :: :ok | {:error, :failed}
   def actuate(device_id, action) do
     Logger.info("[KarmaBody] Simulation - #{inspect(device_id)} actuate #{inspect(action)}")
+    body_name = KarmaBody.name()
 
     case HTTPoison.get(
-           simulation_url("actuate/#{device_id}/#{action}"),
+           simulation_url("actuate/body/#{body_name}/device/#{device_id}/action/#{action}"),
            [{"content-type", "application/json"}]
          ) do
       {:ok, _response} ->
@@ -119,6 +120,30 @@ defmodule KarmaBody.Simulation do
 
       other ->
         Logger.info("[KarmaBody] Simulation - Actuating got unexpected #{inspect(other)}")
+        {:error, :failed}
+    end
+  end
+
+  @doc """
+  Execute actuations.
+  """
+  @spec execute_actions() :: :ok | {:error, :failed}
+  def execute_actions() do
+    Logger.info("[KarmaBody] Simulation - Executing actions")
+    body_name = KarmaBody.name()
+
+    case HTTPoison.get(
+           simulation_url("execute_actions/#{body_name}"),
+           [{"content-type", "application/json"}]
+         ) do
+      {:ok, _response} ->
+        :ok
+
+      other ->
+        Logger.info(
+          "[KarmaBody] Simulation - Executing actions got unexpected #{inspect(other)}"
+        )
+
         {:error, :failed}
     end
   end

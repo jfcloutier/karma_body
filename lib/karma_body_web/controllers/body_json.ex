@@ -17,6 +17,8 @@ defmodule KarmaBodyWeb.BodyJSON do
   def actuated(%{actuator: id, action: sense, value: value}),
     do: %{actuator: id, action: sense, value: value}
 
+  def executed(%{value: value}), do: %{executed: value}
+
   defp sensor_data(sensor), do: Map.drop(sensor, [:class])
 
   defp actuator_data(actuator), do: Map.drop(actuator, [:class])

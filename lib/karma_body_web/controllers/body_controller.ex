@@ -35,4 +35,12 @@ defmodule KarmaBodyWeb.BodyController do
     value = KarmaBody.actuate(id: id, action: action)
     render(conn, :actuated, actuator: id, action: action, value: value)
   end
+
+  @doc """
+  Ask the body to execute pending actions.
+  """
+  def execute_actions(conn, _params) do
+    value = KarmaBody.execute_actions()
+    render(conn, :executed, value: value)
+  end
 end

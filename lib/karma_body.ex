@@ -43,6 +43,12 @@ defmodule KarmaBody do
   def actuate(id: device_id, action: action),
     do: platform_module().actuate(device_id, action)
 
+    @doc """
+    Execute pending actions
+    """
+  @spec execute_actions() :: :ok | {:error, :failed}
+  def execute_actions(), do: platform_module().execute_actions()
+
   @doc """
   Get platform name
   """

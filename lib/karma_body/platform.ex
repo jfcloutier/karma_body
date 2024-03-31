@@ -6,7 +6,7 @@ defmodule KarmaBody.Platform do
   @type device() :: any()
   @type device_id :: String.t()
   @type sense() :: String.t()
-  @type action() :: String.t()
+  @type action() :: String.t() # "spin" | "reverse_spin"
   @type domain :: [String.t()] | :percent | %{from: integer(), to: integer()}
   @type capabilities :: %{sense: sense(), domain: domain()} | %{action: action}
   @type exposed_device() :: %{
@@ -47,7 +47,14 @@ defmodule KarmaBody.Platform do
   @callback sense(device_id(), sense()) :: integer() | String.t()
 
   @doc """
-  Request an actuation.
+  Accumulate an actuation of a device.
   """
   @callback actuate(device_id(), action()) :: :ok | {:error, :failed}
+
+  @doc """
+  For each actuator, aggregate pending actions (they may cancel each other or be additive).
+  Execute the aggregates for each actuator concurrently.
+  Reset pending actions.
+  """
+  @callback execute_actions() :: :ok | {:error, :failed}
 end
