@@ -33,14 +33,14 @@ defmodule KarmaBody do
   @doc """
   Request a sensing from a device.
   """
-  @spec sense(id: String.t(), sense: String.t()) :: sensed_value()
-  def sense(id: device_id, sense: sense), do: platform_module().sense(device_id, sense)
+  @spec sense(device_id: String.t(), sense: String.t()) :: sensed_value()
+  def sense(device_id: device_id, sense: sense), do: platform_module().sense(device_id, sense)
 
   @doc """
   Request an action from a device.
   """
-  @spec actuate(id: String.t(), action: String.t()) :: :ok | {:error, :failed}
-  def actuate(id: device_id, action: action),
+  @spec actuate(device_id: String.t(), action: String.t()) :: :ok | {:error, :failed}
+  def actuate(device_id: device_id, action: action),
     do: platform_module().actuate(device_id, action)
 
     @doc """

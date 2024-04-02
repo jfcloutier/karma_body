@@ -23,21 +23,21 @@ defmodule KarmaBodyWeb.BodyController do
   @doc """
   Ask a sensor to sense.
   """
-  def sense(conn, %{"id" => id, "sense" => sense}) do
-    value = KarmaBody.sense(id: id, sense: sense)
-    render(conn, :sensed, sensor: id, sense: sense, value: value)
+  def sense(conn, %{"device_id" => device_id, "sense" => sense}) do
+    value = KarmaBody.sense(device_id: device_id, sense: sense)
+    render(conn, :sensed, sensor: device_id, sense: sense, value: value)
   end
 
   @doc """
-  Ask an actuator to act.
+  Ask an actuator to add a pending action.
   """
-  def actuate(conn, %{"id" => id, "action" => action}) do
-    value = KarmaBody.actuate(id: id, action: action)
-    render(conn, :actuated, actuator: id, action: action, value: value)
+  def actuate(conn, %{"device_id" => device_id, "action" => action}) do
+    value = KarmaBody.actuate(device_id: device_id, action: action)
+    render(conn, :actuated, actuator: device_id, action: action, value: value)
   end
 
   @doc """
-  Ask the body to execute pending actions.
+  Ask the body to execute all pending actions for all actuators.
   """
   def execute_actions(conn, _params) do
     value = KarmaBody.execute_actions()

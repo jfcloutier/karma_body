@@ -10,8 +10,8 @@ defmodule KarmaBodyWeb.Router do
 
     get "/sensors", BodyController, :sensors
     get "/actuators", BodyController, :actuators
-    get "/sense/:id/:sense", BodyController, :sense
-    get "/actuate/:id/:action", BodyController, :actuate
+    get "/sense/:device_id/:sense", BodyController, :sense
+    get "/actuate/:device_id/:action", BodyController, :actuate
     get "/execute_actions", BodyController, :execute_actions
   end
 end
