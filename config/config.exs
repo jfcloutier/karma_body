@@ -56,7 +56,7 @@ config :karma_body, :brickpi3,
       motor: :tacho_motor,
       polarity: "normal",
       rpm: 60,
-      burst_secs: 0.1,
+      burst_secs: 1,
       position: :left
     ],
     [
@@ -64,7 +64,7 @@ config :karma_body, :brickpi3,
       motor: :tacho_motor,
       polarity: "normal",
       rpm: 60,
-      burst_secs: 0.1,
+      burst_secs: 1,
       position: :right
     ]
     # [port: :outC, motor: :tacho_motor, polarity: "normal", rpm: 120, burst_secs: 5,position: :front, orientation: :downward]
