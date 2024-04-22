@@ -47,7 +47,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Infrared do
   end
 
   @impl LegoDevice
-  def to_exposed_actuators(_), do: []
+  def to_exposed_effectors(_), do: []
 
   @impl LegoDevice
   def initialize_platform(_device), do: :ok

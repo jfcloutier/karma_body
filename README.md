@@ -2,7 +2,7 @@
 
 ## About
 
-A Web app to access the actuators and sensors of a robot's body, real or simulated.
+A Web app to access the effectors and sensors of a robot's body, real or simulated.
 
 KarmaBody is responsible...
 

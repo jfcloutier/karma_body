@@ -24,8 +24,8 @@ defmodule KarmaBody do
   @spec name() :: String.t()
   def name(), do: Application.get_env(:karma_body, :name)
 
-  @spec actuators() :: [Platform.exposed_device()]
-  def actuators(), do: platform_module().exposed_actuators()
+  @spec effectors() :: [Platform.exposed_device()]
+  def effectors(), do: platform_module().exposed_effectors()
 
   @spec sensors() :: [Platform.exposed_device()]
   def sensors(), do: platform_module().exposed_sensors()

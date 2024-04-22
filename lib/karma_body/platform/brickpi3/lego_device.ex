@@ -56,9 +56,9 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice do
   @callback to_exposed_sensors(t()) :: [Platform.exposed_device()]
 
   @doc """
-  Convert a lego device into one or more exposed actuator devices.
+  Convert a lego device into one or more exposed effector devices.
   """
-  @callback to_exposed_actuators(t()) :: [Platform.exposed_device()]
+  @callback to_exposed_effectors(t()) :: [Platform.exposed_device()]
 
   @doc """
   Initialize the lego device's platform state given the device's properties.

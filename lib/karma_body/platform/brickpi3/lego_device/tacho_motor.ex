@@ -8,7 +8,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
   require Logger
 
   @behaviour LegoDevice
-  @behaviour KarmaBody.Actuator
+  @behaviour KarmaBody.Effector
   @behaviour KarmaBody.Sensor
 
   @impl LegoDevice
@@ -25,7 +25,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
     ]
 
   @impl LegoDevice
-  @spec to_exposed_actuators(KarmaBody.Platform.Brickpi3.LegoDevice.t()) :: [
+  @spec to_exposed_effectors(KarmaBody.Platform.Brickpi3.LegoDevice.t()) :: [
           %{
             capabilities: %{
               optional(:action) => binary(),
@@ -39,7 +39,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
           },
           ...
         ]
-  def to_exposed_actuators(tacho_motor),
+  def to_exposed_effectors(tacho_motor),
     do: [
       LegoDevice.to_exposed_device(tacho_motor, %{
         action: "spin"
@@ -84,7 +84,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
     }
   end
 
-  @impl KarmaBody.Actuator
+  @impl KarmaBody.Effector
   def execute(tacho_motor, %{polarity: polarity, bursts: bursts} = execution) do
     Logger.warning("EXECUTING #{inspect(execution)} on motor #{inspect(tacho_motor.attribute_path)}")
     burst_secs = tacho_motor.properties[:burst_secs]

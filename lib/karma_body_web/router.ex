@@ -9,7 +9,7 @@ defmodule KarmaBodyWeb.Router do
     pipe_through :api
 
     get "/sensors", BodyController, :sensors
-    get "/actuators", BodyController, :actuators
+    get "/effectors", BodyController, :effectors
     get "/sense/:device_id/:sense", BodyController, :sense
     get "/actuate/:device_id/:action", BodyController, :actuate
     get "/execute_actions", BodyController, :execute_actions

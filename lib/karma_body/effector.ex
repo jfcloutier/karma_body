@@ -1,12 +1,12 @@
-defmodule KarmaBody.Actuator do
+defmodule KarmaBody.Effector do
   @moduledoc """
-  The actuator behaviour
+  The effector behaviour
   """
 
   alias KarmaBody.Platform
 
   @doc """
-  Ask a device to execute its actuation.
+  Ask a device to execute its effect.
   """
   @callback execute(Platform.device(), map()) :: :ok
 end

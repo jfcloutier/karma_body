@@ -52,8 +52,8 @@ defmodule KarmaBody.Platform.Brickpi3 do
   end
 
   @impl Platform
-  def exposed_actuators() do
-    GenServer.call(__MODULE__, :exposed_actuators)
+  def exposed_effectors() do
+    GenServer.call(__MODULE__, :exposed_effectors)
   end
 
   @impl Platform
@@ -88,8 +88,8 @@ defmodule KarmaBody.Platform.Brickpi3 do
     {:reply, all_exposed_sensors, state}
   end
 
-  def handle_call(:exposed_actuators, _from, state),
-    do: {:reply, state.lego_motors |> Enum.map(&to_exposed_actuators/1) |> List.flatten(), state}
+  def handle_call(:exposed_effectors, _from, state),
+    do: {:reply, state.lego_motors |> Enum.map(&to_exposed_effectors/1) |> List.flatten(), state}
 
   def handle_call({:sense, device_id, sense}, _from, state) do
     lego_device = find_device(state.lego_sensors ++ state.lego_motors, device_id)
@@ -216,5 +216,5 @@ defmodule KarmaBody.Platform.Brickpi3 do
   end
 
   defp to_exposed_sensors(lego_device), do: lego_device.module.to_exposed_sensors(lego_device)
-  defp to_exposed_actuators(lego_device), do: lego_device.module.to_exposed_actuators(lego_device)
+  defp to_exposed_effectors(lego_device), do: lego_device.module.to_exposed_effectors(lego_device)
 end

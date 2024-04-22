@@ -27,7 +27,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Ultrasonic do
   def set_constants(device), do: device
 
   @impl LegoDevice
-  def to_exposed_actuators(_), do: []
+  def to_exposed_effectors(_), do: []
 
   @impl KarmaBody.Sensor
   def sense(us_sensor, "distance") do

@@ -13,11 +13,11 @@ defmodule KarmaBodyWeb.BodyController do
   end
 
   @doc """
-  Get the body's actuators.
+  Get the body's effectors.
   """
-  def actuators(conn, _param) do
-    actuators = KarmaBody.actuators()
-    render(conn, :index, actuators: actuators)
+  def effectors(conn, _param) do
+    effectors = KarmaBody.effectors()
+    render(conn, :index, effectors: effectors)
   end
 
   @doc """
@@ -29,15 +29,15 @@ defmodule KarmaBodyWeb.BodyController do
   end
 
   @doc """
-  Ask an actuator to add a pending action.
+  Ask an effector to add a pending action.
   """
   def actuate(conn, %{"device_id" => device_id, "action" => action}) do
     value = KarmaBody.actuate(device_id: device_id, action: action)
-    render(conn, :actuated, actuator: device_id, action: action, value: value)
+    render(conn, :actuated, effector: device_id, action: action, value: value)
   end
 
   @doc """
-  Ask the body to execute all pending actions for all actuators.
+  Ask the body to execute all pending actions for all effectors.
   """
   def execute_actions(conn, _params) do
     value = KarmaBody.execute_actions()

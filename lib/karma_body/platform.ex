@@ -37,9 +37,9 @@ defmodule KarmaBody.Platform do
   """
   @callback exposed_sensors() :: [exposed_device()]
   @doc """
-  Get the body's exposed actuators
+  Get the body's exposed effectors
   """
-  @callback exposed_actuators() :: [exposed_device()]
+  @callback exposed_effectors() :: [exposed_device()]
 
   @doc """
   Request a sensing.
@@ -52,8 +52,8 @@ defmodule KarmaBody.Platform do
   @callback actuate(device_id(), action()) :: :ok | {:error, :failed}
 
   @doc """
-  For each actuator, aggregate pending actions (they may cancel each other or be additive).
-  Execute the aggregates for each actuator concurrently.
+  For each effector, aggregate pending actions (they may cancel each other or be additive).
+  Execute the aggregates for each effector concurrently.
   Reset pending actions.
   """
   @callback execute_actions() :: :ok | {:error, :failed}
