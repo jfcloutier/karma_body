@@ -46,4 +46,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Gyro do
     LegoDevice.set_operating_mode(gyro_sensor, @rotational_speed)
     LegoDevice.get_attribute(gyro_sensor, "value0", :integer)
   end
+
+  @impl KarmaBody.Sensor
+  def tolerance(_, "angle"), do: 2
 end

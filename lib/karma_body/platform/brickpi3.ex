@@ -67,6 +67,13 @@ defmodule KarmaBody.Platform.Brickpi3 do
   end
 
   @impl Platform
+  def tolerance(device_id, sense) do
+    if simulated?(),
+      do: Simulation.tolerance(device_id, sense),
+      else: GenServer.call(__MODULE__, {:tolerance, device_id, sense})
+  end
+
+  @impl Platform
   def actuate(device_id, action) do
     if simulated?(),
       do: Simulation.actuate(device_id, action),
@@ -95,6 +102,12 @@ defmodule KarmaBody.Platform.Brickpi3 do
     lego_device = find_device(state.lego_sensors ++ state.lego_motors, device_id)
     value = lego_device.module().sense(lego_device, sense)
     {:reply, value, state}
+  end
+
+  def handle_call({:tolerance, device_id, sense}, _from, state) do
+    lego_device = find_device(state.lego_sensors ++ state.lego_motors, device_id)
+    tolerance = lego_device.module().tolerance(lego_device, sense)
+    {:reply, tolerance, state}
   end
 
   @impl GenServer

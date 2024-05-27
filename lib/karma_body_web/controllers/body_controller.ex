@@ -24,8 +24,8 @@ defmodule KarmaBodyWeb.BodyController do
   Ask a sensor to sense.
   """
   def sense(conn, %{"device_id" => device_id, "sense" => sense}) do
-    value = KarmaBody.sense(device_id: device_id, sense: sense)
-    render(conn, :sensed, sensor: device_id, sense: sense, value: value)
+    {value, tolerance} = KarmaBody.sense(device_id: device_id, sense: sense)
+    render(conn, :sensed, sensor: device_id, sense: sense, value: value, tolerance: tolerance)
   end
 
   @doc """

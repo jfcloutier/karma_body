@@ -33,4 +33,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Touch do
       1 -> "pressed"
     end
   end
+
+  @impl KarmaBody.Sensor
+  def tolerance(_touch_sensor, "contact"), do: 0
 end

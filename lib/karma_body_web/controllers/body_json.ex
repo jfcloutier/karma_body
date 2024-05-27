@@ -11,8 +11,8 @@ defmodule KarmaBodyWeb.BodyJSON do
     %{effectors: for(effector <- effectors, do: effector_data(effector))}
   end
 
-  def sensed(%{sensor: id, sense: sense, value: value}),
-    do: %{sensor: id, sense: sense, value: value}
+  def sensed(%{sensor: id, sense: sense, value: value, tolerance: tolerance}),
+    do: %{sensor: id, sense: sense, value: value, tolerance: tolerance}
 
   def actuated(%{effector: id, action: sense, value: value}),
     do: %{effector: id, action: sense, value: value}

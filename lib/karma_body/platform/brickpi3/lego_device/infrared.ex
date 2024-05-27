@@ -83,4 +83,17 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Infrared do
         end
     end
   end
+
+  @impl KarmaBody.Sensor
+  def tolerance(_ir_sensor, "proximity"), do: 1
+
+  def tolerance(_ir_sensor, sense_channel) do
+    case String.split(sense_channel, "_") do
+      ["heading", _channel_s] ->
+        2
+
+      ["distance", _channel_s] ->
+        1
+    end
+  end
 end

@@ -86,7 +86,10 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
 
   @impl KarmaBody.Effector
   def execute(tacho_motor, %{polarity: polarity, bursts: bursts} = execution) do
-    Logger.warning("EXECUTING #{inspect(execution)} on motor #{inspect(tacho_motor.attribute_path)}")
+    Logger.warning(
+      "EXECUTING #{inspect(execution)} on motor #{inspect(tacho_motor.attribute_path)}"
+    )
+
     burst_secs = tacho_motor.properties[:burst_secs]
 
     actual_polarity =
@@ -109,6 +112,11 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.TachoMotor do
 
   def sense(tacho_motor, "position"),
     do: LegoDevice.get_attribute(tacho_motor, "position", :integer)
+
+  @impl KarmaBody.Sensor
+  def tolerance(_tacho_motor, "state"), do: 0
+
+  def tolerance(_tacho_motor, "position"), do: 10
 
   # count_per_rot - The number of tacho counts in one rotation of the motor.
   # speed - tacho counts per sec

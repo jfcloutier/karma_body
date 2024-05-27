@@ -37,4 +37,7 @@ defmodule KarmaBody.Platform.Brickpi3.LegoDevice.Ultrasonic do
 
     if value > 2500, do: :unknown, else: round(value / 10)
   end
+
+  @impl KarmaBody.Sensor
+  def tolerance(_us_sensor, "distance"), do: 1
 end

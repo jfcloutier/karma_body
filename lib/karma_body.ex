@@ -18,6 +18,8 @@ defmodule KarmaBody do
 
   @type sensed_value :: String.t() | integer() | :unknown
 
+  @type tolerance :: non_neg_integer()
+
   @doc """
   The body's name. Used when simulated.
   """
@@ -33,8 +35,12 @@ defmodule KarmaBody do
   @doc """
   Request a sensing from a device.
   """
-  @spec sense(device_id: String.t(), sense: String.t()) :: sensed_value()
-  def sense(device_id: device_id, sense: sense), do: platform_module().sense(device_id, sense)
+  @spec sense(device_id: String.t(), sense: String.t()) :: {sensed_value(), tolerance}
+  def sense(device_id: device_id, sense: sense) do
+    value = platform_module().sense(device_id, sense)
+    tolerance = platform_module().tolerance(device_id, sense)
+    {value, tolerance}
+  end
 
   @doc """
   Request an action from a device.

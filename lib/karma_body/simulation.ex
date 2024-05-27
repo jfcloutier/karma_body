@@ -104,6 +104,12 @@ defmodule KarmaBody.Simulation do
   end
 
   @doc """
+  The tolerance of a simulated device's sense is always 0 (for now)
+  """
+  @spec tolerance(Platform.device_id(), Platform.sense()) :: KarmaBody.tolerance()
+  def tolerance(_device_id, _sense), do: 0
+
+  @doc """
   Simulate actuating a device.
   """
   @spec actuate(Platform.device_id(), Platform.action()) :: :ok | {:error, :failed}

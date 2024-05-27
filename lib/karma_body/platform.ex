@@ -6,7 +6,8 @@ defmodule KarmaBody.Platform do
   @type device() :: any()
   @type device_id :: String.t()
   @type sense() :: String.t()
-  @type action() :: String.t() # "spin" | "reverse_spin"
+  # "spin" | "reverse_spin"
+  @type action() :: String.t()
   @type domain :: [String.t()] | :percent | %{from: integer(), to: integer()}
   @type capabilities :: %{sense: sense(), domain: domain()} | %{action: action}
   @type exposed_device() :: %{
@@ -45,6 +46,11 @@ defmodule KarmaBody.Platform do
   Request a sensing.
   """
   @callback sense(device_id(), sense()) :: integer() | String.t()
+
+  @doc """
+  Get the tolerance of a sensor.
+  """
+  @callback tolerance(device_id(), sense()) :: non_neg_integer()
 
   @doc """
   Accumulate an actuation of a device.
